@@ -13,11 +13,11 @@ description:         Please see the README on Github at <https://github.com/mats
 dependencies:
 - base >= 4.7 && < 5
 
-library:
-  source-dirs: src
+ghc-options:
+- -Wall
 
 executables:
-  planet-haskell-jp-exe:
+  generate:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -25,15 +25,13 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - planet-haskell-jp
-
-tests:
-  planet-haskell-jp-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - planet-haskell-jp
+    - blaze-html
+    - extensible
+    # - extensible-instances
+    - directory
+    # - drinkery
+    - filepath
+    - lens
+    - scrapbook
+    - text
+    - yaml
