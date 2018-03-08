@@ -27,11 +27,10 @@ executables:
     dependencies:
     - blaze-html
     - extensible
-    # - extensible-instances
     - directory
-    # - drinkery
     - filepath
     - lens
     - scrapbook
     - text
+    - time
     - yaml
