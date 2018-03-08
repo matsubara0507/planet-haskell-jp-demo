@@ -73,7 +73,7 @@ tabNav baseUrl selectedTab list = do
   ul ! class_ "list-style-none" $ list
  where
   tab path selected = a ! href (addBaseUrl path) !
-    class_ "tabnav-tab" ! class_ (if selected then "selected" else "")
+    class_ ("tabnav-tab " `mappend` if selected then "selected" else "")
   addBaseUrl = fromText . mappend baseUrl
 
 writeFeed :: FilePath -> Text -> ScrapBook.Collecter ()
