@@ -35,9 +35,9 @@ main = (listToMaybe <$> getArgs) >>= \case
 
 readConfig :: FilePath -> IO ScrapBook.Config
 readConfig = either (error . show) pure <=< decodeFileEither'
-  where
-    decodeFileEither' path =
-      fmap (ScrapBook.updateFileName feed' path) <$> Y.decodeFileEither path
+ where
+  decodeFileEither' path =
+    fmap (ScrapBook.updateFileName feed' path) <$> Y.decodeFileEither path
 
 generate :: FilePath -> ScrapBook.Config -> IO ()
 generate path config = either (error . show) pure <=< collect $ do
@@ -46,15 +46,16 @@ generate path config = either (error . show) pure <=< collect $ do
 
   writeFeed (dropFileName path ++ name) =<< write config feed' posts
 
-  writeHtml "./index.html" $
-    tabNav baseUrl Posts $ mapM_ postToHtml $ take 50 $ reverse $ sortOn (view #date) posts
+  writeHtml "./index.html" $ tabNav baseUrl Posts $ mapM_
+    postToHtml
+    (take 50 . reverse $ sortOn (view #date) posts)
 
-  writeHtml "./sites.html" $
-    tabNav baseUrl Sites $ mapM_ siteToHtml $ sortOn (view #title) sites
-
-  where
-    name = ScrapBook.fileName config feed'
-    baseUrl = maybe "" (view #baseUrl) $ config ^. #feed
+  writeHtml "./sites.html" $ tabNav baseUrl Sites $ mapM_
+    siteToHtml
+    (sortOn (view #title) sites)
+ where
+  name    = ScrapBook.fileName config feed'
+  baseUrl = maybe "" (view #baseUrl) $ config ^. #feed
 
 data Tab
   = Posts
@@ -70,44 +71,42 @@ tabNav baseUrl selectedTab list = do
       tab "/"      (selectedTab == Posts) "Post"
       tab "/sites" (selectedTab == Sites) "Sites"
   ul ! class_ "list-style-none" $ list
-  where
-    tab path selected =
-      a ! href (addBaseUrl path) ! class_ "tabnav-tab" ! class_ (if selected then "selected" else "")
-    addBaseUrl = fromText . mappend baseUrl
+ where
+  tab path selected = a ! href (addBaseUrl path) !
+    class_ "tabnav-tab" ! class_ (if selected then "selected" else "")
+  addBaseUrl = fromText . mappend baseUrl
 
 writeFeed :: FilePath -> Text -> ScrapBook.Collecter ()
 writeFeed path txt = liftIO $ writeFileWithDir path txt
 
 writeHtml :: FilePath -> Html -> ScrapBook.Collecter ()
-writeHtml path bodyHtml = liftIO . TL.writeFile path . renderHtml $
-  docTypeHtml ! lang "jp" $ do
+writeHtml path bodyHtml =
+  liftIO . TL.writeFile path . renderHtml $ docTypeHtml ! lang "jp" $ do
     head $ do
       title "Planet Haskell (JP)"
-      link ! rel "stylesheet" ! type_ "text/css" !
-        href "https://cdnjs.cloudflare.com/ajax/libs/Primer/10.0.0-rc.21/build.css"
-      link ! rel "stylesheet" ! type_ "text/css" !
-        href "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      link ! rel "stylesheet" ! type_ "text/css" ! href
+        "https://cdnjs.cloudflare.com/ajax/libs/Primer/10.0.0-rc.21/build.css"
     body $ div ! class_ "container-md" $ do
       h1 ! id "header" $ "Planet Haskell (JP)"
       bodyHtml
 
 postToHtml :: ScrapBook.Post -> Html
 postToHtml post = li ! class_ "border-bottom" $ do
-  h3 $ a ! href (fromText $ post ^. #url) ! class_ "link-gray-dark" $
-    toHtml (post ^. #title)
+  h3 $ a' ! href (fromText $ post ^. #url) $ toHtml (post ^. #title)
   p $ do
     let site = post ^. #site
     toHtml $ mconcat ["by ", site ^. #author]
     " on "
-    span $ a ! href (fromText $ site ^. #url) ! class_ "link-gray-dark" $
-      toHtml (site ^. #title)
+    span $ a' ! href (fromText $ site ^. #url) $ toHtml (site ^. #title)
     toHtml $ mconcat [" at ", formatTimeToDate $ unpack (post ^. #date)]
 
 siteToHtml :: ScrapBook.Site -> Html
 siteToHtml site = li ! class_ "border-bottom" $ do
-  h3 $ a ! href (fromText $ site ^. #url) ! class_ "link-gray-dark" $
-    toHtml (site ^. #title)
+  h3 $ a' ! href (fromText $ site ^. #url) $ toHtml (site ^. #title)
   p $ toHtml $ mconcat ["by ", site ^. #author]
+
+a' :: Html -> Html
+a' = a ! class_ "link-gray-dark"
 
 feed' :: ScrapBook.Format
 feed' = embedAssoc $ #feed @= ()
@@ -126,5 +125,5 @@ formatTimeToDate =
 
 -- take 10 == take (length "2018-02-02")
 formatTimeFromRFC3339 :: String -> Maybe UTCTime
-formatTimeFromRFC3339
-  = parseTimeM True defaultTimeLocale (iso8601DateFormat Nothing) . take 10
+formatTimeFromRFC3339 =
+  parseTimeM True defaultTimeLocale (iso8601DateFormat Nothing) . take 10
