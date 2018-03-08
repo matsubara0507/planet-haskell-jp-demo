@@ -1,0 +1,45 @@
+feed:
+  title: "Planet Haskell (JP)"
+  baseUrl: "https://matsubara0507.github.io/planet-haskell-jp-demo"
+  name: feed.xml
+
+sites:
+  - title: "チェシャ猫の消滅定理"
+    author: "チェシャ猫"
+    url: http://ccvanishing.hateblo.jp
+    feed: http://ccvanishing.hateblo.jp/feed
+  - title: "モナドとわたしとコモナド"
+    author: "Fumiaki Kinoshita"
+    url: http://fumieval.hatenablog.com
+    feed: http://fumieval.hatenablog.com/feed
+  - title: "北海道苫小牧市出身のPGが書くブログ"
+    author: "hiratara"
+    url: http://hiratara.hatenadiary.jp
+    feed: http://hiratara.hatenadiary.jp/feed
+  - title: "プログラムモグモグ"
+    author: "itchyny"
+    url: http://itchyny.hatenablog.com
+    feed: http://itchyny.hatenablog.com/feed
+  - title: "趣味はデバッグ……"
+    author: "岡本和樹"
+    url: http://kakkun61.hatenablog.com/
+    feed: http://kakkun61.hatenablog.com/feed
+  - title: "Kuro’s Blog"
+    author: Hiroyuki Kurokawa (hrkr)
+    url: https://kurokawh.blogspot.jp/
+    atom:
+      url: https://kurokawh.blogspot.com/feeds/posts/default
+      linkAttrs:
+        rel: alternate
+  - title: "flip map"
+    author: "lotz"
+    url: https://lotz84.github.io
+    feed: https://lotz84.github.io/feed.xml
+  - title: "ひげメモ"
+    author: "matsubara0507"
+    url: https://matsubara0507.github.io
+    feed: https://matsubara0507.github.io/feed
+  - title: "syocy’s diary"
+    author: "syocy"
+    url: http://syocy.hatenablog.com/
+    feed: http://syocy.hatenablog.com/feed
