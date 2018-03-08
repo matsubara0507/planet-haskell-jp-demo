@@ -46,23 +46,34 @@ generate path config = either (error . show) pure <=< collect $ do
 
   writeFeed (dropFileName path ++ name) =<< write config feed' posts
 
-  writeHtml "./index.html" $ do
-    div ! class_ "tabnav" $
-      nav ! class_ "tabnav-tabs" $ do
-        a ! href "/" ! class_ "tabnav-tab selected" $ "Posts"
-        a ! href "/sites" ! class_ "tabnav-tab" $ "Authors"
-    ul ! class_ "list-style-none" $ mapM_ postToHtml $
-      take 50 $ reverse $ sortOn (view #date) posts
+  writeHtml "./index.html" $
+    tabNav baseUrl Posts $ mapM_ postToHtml $ take 50 $ reverse $ sortOn (view #date) posts
 
-  writeHtml "./sites.html" $ do
-    div ! class_ "tabnav" $
-      nav ! class_ "tabnav-tabs" $ do
-        a ! href "/" ! class_ "tabnav-tab" $ "Posts"
-        a ! href "/sites" ! class_ "tabnav-tab selected" $ "Sites"
-    ul ! class_ "list-style-none" $ mapM_ siteToHtml $ sortOn (view #title) sites
+  writeHtml "./sites.html" $
+    tabNav baseUrl Sites $ mapM_ siteToHtml $ sortOn (view #title) sites
 
   where
     name = ScrapBook.fileName config feed'
+    baseUrl = maybe "" (view #baseUrl) $ config ^. #feed
+
+data Tab
+  = Posts
+  | Sites
+  deriving (Show, Eq)
+
+tabNav :: Text -> Tab -> Html -> Html
+tabNav baseUrl selectedTab list = do
+  div ! class_ "tabnav" $ do
+    div ! class_ "float-right" $
+      a ! href (addBaseUrl "/feed") ! class_ "tabnav-extra" $ "feed"
+    nav ! class_ "tabnav-tabs" $ do
+      tab "/"      (selectedTab == Posts) "Post"
+      tab "/sites" (selectedTab == Sites) "Sites"
+  ul ! class_ "list-style-none" $ list
+  where
+    tab path selected =
+      a ! href (addBaseUrl path) ! class_ "tabnav-tab" ! class_ (if selected then "selected" else "")
+    addBaseUrl = fromText . mappend baseUrl
 
 writeFeed :: FilePath -> Text -> ScrapBook.Collecter ()
 writeFeed path txt = liftIO $ writeFileWithDir path txt
@@ -77,10 +88,7 @@ writeHtml path bodyHtml = liftIO . TL.writeFile path . renderHtml $
       link ! rel "stylesheet" ! type_ "text/css" !
         href "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     body $ div ! class_ "container-md" $ do
-      h1 ! id "header" $ do
-        "Planet Haskell (JP)"
-        a ! href "/feed" ! class_ "float-right link-gray-dark" $
-          i ! class_ "fa fa-rss-square" $ ""
+      h1 ! id "header" $ "Planet Haskell (JP)"
       bodyHtml
 
 postToHtml :: ScrapBook.Post -> Html
