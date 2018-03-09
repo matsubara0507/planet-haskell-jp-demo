@@ -17,6 +17,7 @@ jobs:
     - stage: exec planet-haskell-jp generator
       script: git clone -b gh-pages "https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" temp
       after_success:
+        - cp sites.yaml temp/sites.yaml
         - cd temp
         - stack exec -- generator sites.yaml
         - git config user.name "${GIT_NAME}"
