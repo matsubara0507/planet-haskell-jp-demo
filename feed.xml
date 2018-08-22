@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2018-08-18T00:00:00Z</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://matsubara0507.github.io/posts/2018-08-18-haskell-github-webhook.html</id><title type="text">Haskell Servant で GitHub Webhook</title><updated>2018-08-18T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-08-18-haskell-github-webhook.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2018-08-22T13:06:23.227+09:00</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://kurokawh.blogspot.com/2018/02/windows-windows10.html</id><title type="text">[windows] Windows10セットアップ・設定項目のメモ</title><updated>2018-08-22T13:06:23.227+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/02/windows-windows10.html"/><summary type="text">Windows10セットアップ時の設定項目、インストールアプリの備忘録。
+
+
+スタートメニュー・タスクバーの設定
+
+タスクバーの設定 
+
+小さいタスクバーボタンを使う：オン 
+[スタート]ボタンを右クリックするかWindowsキー＋Xキーを押したときに表示されるメニューで、コマンドプロンプトをWindows PowerShellに置き換える：オフ
+タスクバーボタンを結合する
+
+「タスクバーに入りきらない場合」を選択
+
+タスクバーをすべての ディスプレイに表示する：オフ
+
+
+
+ Quick Launcherを表示する
+
+クイック起動を復活する 
+Windows 10 タスクバーにクイック起動を表示する
+
+スタートメニューにコントロールパネルを表示する
+
+「Windows 10」のコントロールパネルを表示する方法について
+
+スタートメニューにピン止めするアプリ：
+
+Windowsシステム</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-08-18-haskell-github-webhook.html</id><title type="text">Haskell Servant で GitHub Webhook</title><updated>2018-08-18T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-08-18-haskell-github-webhook.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
  &lt;div class="card-content"&gt;
   &lt;header class="post-header"&gt;
     &lt;h1 class="post-title" itemprop="name headline"&gt;Haskell Servant で GitHub Webhook&lt;/h1&gt;
@@ -217,35 +245,7 @@ ssh-agentのために秘密鍵セットアップ
 less, lv, manコマンド終了時に画面をクリアしない
 
 [linux][cygwin] less, manの終了直前の画面をクリアしないで端末上に残す方法 
-</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/02/windows-windows10.html</id><title type="text">[windows] Windows10セットアップ・設定項目のメモ</title><updated>2018-08-08T17:28:43.942+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/02/windows-windows10.html"/><summary type="text">Windows10セットアップ時の設定項目、インストールアプリの備忘録。
-
-
-スタートメニュー・タスクバーの設定
-
-タスクバーの設定 
-
-小さいタスクバーボタンを使う：オン 
-[スタート]ボタンを右クリックするかWindowsキー＋Xキーを押したときに表示されるメニューで、コマンドプロンプトをWindows PowerShellに置き換える：オフ
-タスクバーボタンを結合する
-
-「タスクバーに入りきらない場合」を選択
-
-タスクバーをすべての ディスプレイに表示する：オフ
-
-
-
- Quick Launcherを表示する
-
-クイック起動を復活する 
-Windows 10 タスクバーにクイック起動を表示する
-
-スタートメニューにコントロールパネルを表示する
-
-「Windows 10」のコントロールパネルを表示する方法について
-
-スタートメニューにピン止めするアプリ：
-
-Windowsシステム</summary></entry><entry><id>http://ccvanishing.hateblo.jp/entry/2018/08/01/055608</id><title type="text">July Tech Festa 2018 で分散システムの検証について話してきました / #JTF2018</title><updated>2018-08-01T13:56:39+09:00</updated><author><name>チェシャ猫</name></author><link href="http://ccvanishing.hateblo.jp/entry/2018/08/01/055608"/><summary type="html">先日行われた July Tech Festa 2018 で、モデル検査を使った分散アルゴリズムの検証について発表してきました。 前半はオートマトンによるシステムの記述と検査の基礎について、後半は三種類のツール SPIN、TLA+、P による記述方法の紹介、といった内容です。 後半のソースコード紹介が散文的な感じになってしまって、いまいちメリットが伝わらない感じだったので、次回があればもっとエモいスライドにしようと思います。 分散アルゴリズムの形式化 定理証明による検証 今回の話の流れとして「分散システムにはモデル検査が有効」と述べていますが、必ずしも定理証明が分散システムの検証に向かないという…</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE</id><title type="text">入社</title><updated>2018-08-01T00:00:56+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE"/><summary type="html">本日付けで IIJ に入社します。 職業 Haskeller になる……はず。</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7</id><title type="text">退職</title><updated>2018-07-31T22:30:05+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7"/><summary type="html">2013年に新卒で入社した KLab を今日付けで退職しました。</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/21/114826</id><title type="text">LTS-12.1でhpack-convertコンパイルできないんすよねー</title><updated>2018-07-21T11:48:26+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/21/114826"/><summary type="html">そんなこともあろうかと、forkして lts-12.1 ブランチ用意しておきましたので。 github.com まあ、ただの変換ツールなので、古いLTSでビルドしても構わない気はするけど、新しいマシンだと ghc インストールさせたりするのだるかったので。 ということで、手元のリポジトリももろもろ hpack に乗り換えようとしてるのだった。 https://github.com/hiratara/hs-server-starter/pull/4 https://github.com/hiratara/hs-reqcatcher/pull/2 https://github.com/hirata…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2018/07/14/195255</id><title type="text">Dhallによるリッチな設定ファイル体験</title><updated>2018-07-14T19:52:55+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2018/07/14/195255"/><summary type="html">(この記事のレギュレーション: lts-11.9) Dhall という設定記述用言語があり、使ってみたところ良い感じだったので紹介します。 なお、この記事は先日某所で発表したものの拡大版になります。 speakerdeck.com Dhallとは何か Dhallについて短かく表現するなら公式サイトの以下の説明が分かりやすいです。 You can think of Dhall as: JSON + functions + types + imports データ表現にプログラマブルさと静的な検査とファイルのインポートを加えたものというわけです。 まだ開発中のためかあまりアピールされていませんがツー…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/14/175016</id><title type="text">Haskell入門のサンプルコードのLTS-12.0対応 </title><updated>2018-07-14T17:50:16+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/14/175016"/><summary type="html">つい半年前に最新のLTSへ対応したばかりなのに、気がつくと LTS-12.0 が出て、 ghc-8.4 を Stack から使えるようになった。コミュニティが活発で、非常にありがたいことである。 ということで、 Haskell入門 のサンプルもLTS-12.0に対応させたブランチを用意した。と言っても、いくつか Stackge の管理下から外れてしまったパッケージが出てきたのを調整したくらいで、コードは何も変更していない。 github.com さらに素晴らしいことに、これらのコードはすべてWindows 10の最新の WSL 上で動くことを確認できた。macOS上で試すのと同様に、 Wind…</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-07-01-join-ruby-hack-challenge4.html</id><title type="text">Ruby Hack Challenge ＃4 に参加してきた</title><updated>2018-07-01T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-07-01-join-ruby-hack-challenge4.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+</summary></entry><entry><id>http://ccvanishing.hateblo.jp/entry/2018/08/01/055608</id><title type="text">July Tech Festa 2018 で分散システムの検証について話してきました / #JTF2018</title><updated>2018-08-01T13:56:39+09:00</updated><author><name>チェシャ猫</name></author><link href="http://ccvanishing.hateblo.jp/entry/2018/08/01/055608"/><summary type="html">先日行われた July Tech Festa 2018 で、モデル検査を使った分散アルゴリズムの検証について発表してきました。 前半はオートマトンによるシステムの記述と検査の基礎について、後半は三種類のツール SPIN、TLA+、P による記述方法の紹介、といった内容です。 後半のソースコード紹介が散文的な感じになってしまって、いまいちメリットが伝わらない感じだったので、次回があればもっとエモいスライドにしようと思います。 分散アルゴリズムの形式化 定理証明による検証 今回の話の流れとして「分散システムにはモデル検査が有効」と述べていますが、必ずしも定理証明が分散システムの検証に向かないという…</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE</id><title type="text">入社</title><updated>2018-08-01T00:00:56+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE"/><summary type="html">本日付けで IIJ に入社します。 職業 Haskeller になる……はず。</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7</id><title type="text">退職</title><updated>2018-07-31T22:30:05+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7"/><summary type="html">2013年に新卒で入社した KLab を今日付けで退職しました。</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/21/114826</id><title type="text">LTS-12.1でhpack-convertコンパイルできないんすよねー</title><updated>2018-07-21T11:48:26+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/21/114826"/><summary type="html">そんなこともあろうかと、forkして lts-12.1 ブランチ用意しておきましたので。 github.com まあ、ただの変換ツールなので、古いLTSでビルドしても構わない気はするけど、新しいマシンだと ghc インストールさせたりするのだるかったので。 ということで、手元のリポジトリももろもろ hpack に乗り換えようとしてるのだった。 https://github.com/hiratara/hs-server-starter/pull/4 https://github.com/hiratara/hs-reqcatcher/pull/2 https://github.com/hirata…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2018/07/14/195255</id><title type="text">Dhallによるリッチな設定ファイル体験</title><updated>2018-07-14T19:52:55+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2018/07/14/195255"/><summary type="html">(この記事のレギュレーション: lts-11.9) Dhall という設定記述用言語があり、使ってみたところ良い感じだったので紹介します。 なお、この記事は先日某所で発表したものの拡大版になります。 speakerdeck.com Dhallとは何か Dhallについて短かく表現するなら公式サイトの以下の説明が分かりやすいです。 You can think of Dhall as: JSON + functions + types + imports データ表現にプログラマブルさと静的な検査とファイルのインポートを加えたものというわけです。 まだ開発中のためかあまりアピールされていませんがツー…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/14/175016</id><title type="text">Haskell入門のサンプルコードのLTS-12.0対応 </title><updated>2018-07-14T17:50:16+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/14/175016"/><summary type="html">つい半年前に最新のLTSへ対応したばかりなのに、気がつくと LTS-12.0 が出て、 ghc-8.4 を Stack から使えるようになった。コミュニティが活発で、非常にありがたいことである。 ということで、 Haskell入門 のサンプルもLTS-12.0に対応させたブランチを用意した。と言っても、いくつか Stackge の管理下から外れてしまったパッケージが出てきたのを調整したくらいで、コードは何も変更していない。 github.com さらに素晴らしいことに、これらのコードはすべてWindows 10の最新の WSL 上で動くことを確認できた。macOS上で試すのと同様に、 Wind…</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-07-01-join-ruby-hack-challenge4.html</id><title type="text">Ruby Hack Challenge ＃4 に参加してきた</title><updated>2018-07-01T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-07-01-join-ruby-hack-challenge4.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
  &lt;div class="card-content"&gt;
   &lt;header class="post-header"&gt;
     &lt;h1 class="post-title" itemprop="name headline"&gt;Ruby Hack Challenge ＃4 に参加してきた&lt;/h1&gt;
