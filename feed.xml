@@ -1,4 +1,288 @@
-<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2018-12-16T14:31:09.194+09:00</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://kurokawh.blogspot.com/2018/01/cygwin-cygwin.html</id><title type="text">[cygwin] cygwinセットアップ・環境構築手順メモ</title><updated>2018-12-16T14:31:09.194+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/01/cygwin-cygwin.html"/><summary type="text">
+<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2018-12-18T00:00:00Z</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://matsubara0507.github.io/posts/2018-12-18-ghc8x.html</id><title type="text">GHC 8.x 勉強会に行ってきた</title><updated>2018-12-18T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-12-18-ghc8x.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+ &lt;div class="card-content"&gt;
+  &lt;header class="post-header"&gt;
+    &lt;h1 class="post-title" itemprop="name headline"&gt;GHC 8.x 勉強会に行ってきた&lt;/h1&gt;
+    &lt;p class="post-meta"&gt;
+      &lt;time datetime="2018-12-18" itemprop="datePublished"&gt;
+        Dec 18, 2018
+      &lt;/time&gt;
+      
+      
+      &lt;div class="tags"&gt;
+          &lt;i class="fa fa-tags"&gt;&lt;/i&gt; &lt;a href="/tags/Haskell.html"&gt;Haskell&lt;/a&gt; &lt;a href="/tags/event.html"&gt;event&lt;/a&gt;
+      &lt;/div&gt;
+      
+    &lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;div class="post-content" itemprop="articleBody"&gt;
+    &lt;p&gt;本記事は &lt;a href="https://qiita.com/advent-calendar/2018/haskell2"&gt;Haskell (その2) Advent Calendar 2018&lt;/a&gt; の18日目の記事です． 空いていたのでついでに埋めました．&lt;/p&gt;
+&lt;h2 id="section"&gt;&lt;/h2&gt;
+&lt;p&gt;12/7 の10-17時半ぐらいに IIJ-II で GHC8 系のバージョンアップを追う会的なイベントが企画されました． このイベントは IIJ-II の Haskell チームで発案・企画し，Haskell-jp の Slack で募集をかけていました． 定員12人かつ，平日昼間でしたが，面白そうなので有給とって行ってきた(僕は IIJ-II では無いので)． 多少クローズドな会ということもあり，せっかくなので色々と議論したことを記事に起こしておきます． 正確な情報は GHC のドキュメントを呼んでください．&lt;/p&gt;
+&lt;h2 id="進め方"&gt;進め方&lt;/h2&gt;
+&lt;p&gt;GHCには&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/8.0.1-notes.html"&gt;こんな感じ&lt;/a&gt;のリリースノートがある． 当日は8系のリリースノートのハイライトを追っていくという感じだった．&lt;/p&gt;
+&lt;p&gt;事前に一人一つぐらいは調べてきて発表する感じだったが，担当者がいない内容でも，紹介記事を引っ張ってきたりなんだりしてた．&lt;/p&gt;
+&lt;h2 id="section-1"&gt;8.0&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/8.0.1-notes.html"&gt;リリースノートはこれ&lt;/a&gt;． 8.0だけめっちゃ多い． 当初は 7.12 とかにする予定だったが，あまりにも差分があったので 8 にした的な話があるとかないとか(要出典)．&lt;/p&gt;
+&lt;h3 id="typeintype-など"&gt;TypeInType など&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#ghc-flag--XTypeInType"&gt;&lt;code&gt;TypeInType&lt;/code&gt;&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;以下3つの言語拡張も包含している
+&lt;ul&gt;
+&lt;li&gt;PolyKinds&lt;/li&gt;
+&lt;li&gt;DataKinds&lt;/li&gt;
+&lt;li&gt;KindSignatures&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;PolyKind: 型変数のカインドが多相的になる（本来は &lt;code&gt;*&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;DataKinds: 定義した型をカインドとして利用できる&lt;/li&gt;
+&lt;li&gt;KindSignatures: カインドを明示的に指定できる&lt;/li&gt;
+&lt;li&gt;TypeInType:
+&lt;ul&gt;
+&lt;li&gt;上記全部を利用可&lt;/li&gt;
+&lt;li&gt;多相カインド&lt;/li&gt;
+&lt;li&gt;RankNTypes も追加で高階カインドも可能&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Q: 結局目指すところは？
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell"&gt;Dependent Haskell&lt;/a&gt; のマイルストーンの一部では？&lt;/li&gt;
+&lt;li&gt;Merging Types and Kinds&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="patternsynonyms-系"&gt;PatternSynonyms 系&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#record-patsyn"&gt;Record Pattern Synonyms&lt;/a&gt; をサポート&lt;/li&gt;
+&lt;li&gt;レコード型でも PatternSynonyms を利用&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://kazu-yamamoto.hatenablog.jp/entry/20170919/1505787393"&gt;PatternSynonymsのススメ - あどけない話&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;そもそも PatternSynonyms って？&lt;/li&gt;
+&lt;li&gt;PatternSynonyms それ自体は 7.8.1 から&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;8.0 から export 時に &lt;code&gt;pattern&lt;/code&gt; キーワードがいらなくなった
+&lt;ul&gt;
+&lt;li&gt;すごい助かるって意見もあれば&lt;/li&gt;
+&lt;li&gt;あえて明示的にすべきという意見も&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;ネットワーク屋さん的にはこのパターンは本当に便利という話&lt;/li&gt;
+&lt;li&gt;BangPattern や ViewPattern の組み合わせ&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="deriveanyclass"&gt;DeriveAnyClass&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#derive-any-class"&gt;DeriveAnyClass&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;名前の通り任意の型クラスに対して &lt;code&gt;deriving&lt;/code&gt; を利用する仕組みを提供&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;deriving&lt;/code&gt; 可能な型クラスからデフォルト実装を定義したり&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="injective-type-families"&gt;Injective type families&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#injective-ty-fams"&gt;&lt;code&gt;TypeFamilyDependencies&lt;/code&gt;&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://qiita.com/lotz/items/6c038698c8f04f57113a"&gt;型族が単射だと嬉しい理由 - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;(書いた当人は書いてたこと忘れてた笑)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="applicativedo"&gt;ApplicativeDo&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#applicative-do"&gt;&lt;code&gt;ApplicativeDo&lt;/code&gt;&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;do 記法が Applicative でも使える&lt;/li&gt;
+&lt;li&gt;だけじゃなく，do 記法が特定の条件を満たすと勝手に Applicative や Functor に脱糖してくれる
+&lt;ul&gt;
+&lt;li&gt;この条件がなかなか(笑)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;なんか結構盛り上がった(笑)&lt;/p&gt;
+&lt;h3 id="wildcards-in-data-and-type-family"&gt;Wildcards in data and type family&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#wildcards-on-the-lhs-of-data-and-type-family-instances"&gt;この辺り&lt;/a&gt;？ ちょっと何話したか忘れた．&lt;/p&gt;
+&lt;h3 id="strict-系"&gt;Strict 系&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/glasgow_exts.html#strict-haskell"&gt;&lt;code&gt;Strict&lt;/code&gt;&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://kazu-yamamoto.hatenablog.jp/entry/20151117/1447726679"&gt;Strict Haskell - あどけない話&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;昔から正格評価にする記法はあったが，この拡張によりデフォルトの評価戦略を切り替えれる．&lt;/li&gt;
+&lt;li&gt;実は逆に &lt;code&gt;~x&lt;/code&gt; とすることで &lt;code&gt;x&lt;/code&gt; を遅延評価できる&lt;/li&gt;
+&lt;li&gt;Q: パターンマッチの反駁不能パターンはどうなるんだろ？
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;~(~x)&lt;/code&gt; のようにチルダをカッコで重ねる&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="duplicate-record-fields"&gt;Duplicate record fields&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://kazu-yamamoto.hatenablog.jp/entry/20160114/1452735514"&gt;重複したフィールドラベル - あどけない話&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Q: &lt;code&gt;instance (a ~ Int) =&amp;gt; IsLabel &amp;quot;same&amp;quot; (Foo -&amp;gt; a)&lt;/code&gt; の &lt;code&gt;a ~ Int&lt;/code&gt; はなぜ必要か？
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;IsLabel &amp;quot;same&amp;quot; (Foo -&amp;gt; Int)&lt;/code&gt; ではなく&lt;/li&gt;
+&lt;li&gt;推論の順番を明示的にする&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Q: ボイラーテンプレートの件は進んだの？？
+&lt;ul&gt;
+&lt;li&gt;なんか放置されてる&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;SystemF + レコード多相は死ぬ
+&lt;ul&gt;
+&lt;li&gt;OCaml は分けている&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="ユーザ定義-typeerror"&gt;ユーザ定義 TypeError&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;型エラーをユーザーで定義できる？&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://ghc.haskell.org/trac/ghc/wiki/Proposal/CustomTypeErrors"&gt;プロポーザル&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;どんな話したか忘れました，すいません&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="ghci-関連"&gt;GHCi 関連&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;本来 GHCi はコードを同一のプロセスと共通のヒープで実行する&lt;/li&gt;
+&lt;li&gt;それを &lt;a href="https://downloads.haskell.org/~ghc/8.0.2/docs/html/users_guide/ghci.html#external-interpreter"&gt;&lt;code&gt;fexternal-interpreter&lt;/code&gt;&lt;/a&gt; オプションでコントロールできる&lt;/li&gt;
+&lt;li&gt;だっけか（また細かい話は忘れました，すいません）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="section-2"&gt;8.2&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.2.2/docs/html/users_guide/8.2.1-notes.html"&gt;リリースノートはこれ&lt;/a&gt;．&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Typeable mechanism, Type.Reflection&lt;/li&gt;
+&lt;li&gt;そういえばCUIがカラフルになったね&lt;/li&gt;
+&lt;li&gt;Heap 系
+&lt;ul&gt;
+&lt;li&gt;あんまりよく覚えてないごめんなさい&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="derivingstrategies"&gt;DerivingStrategies&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;DerivingStrategies&lt;/code&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://ghc.haskell.org/trac/ghc/wiki/Commentary/Compiler/DerivingStrategies"&gt;Commentary/Compiler/DerivingStrategies – GHC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/kakkun61/deriving-strategies-playground"&gt;kakkun 氏の資料&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;deriving&lt;/code&gt; する時に &lt;code&gt;newtype&lt;/code&gt; や &lt;code&gt;stock&lt;/code&gt; などのキーワードを指定することで &lt;code&gt;deriving&lt;/code&gt; の仕方をコントロールできる&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="unboxedsums"&gt;UnboxedSums&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.2.2/docs/html/users_guide/glasgow_exts.html#ghc-flag--XUnboxedSums"&gt;&lt;code&gt;UnboxedSums&lt;/code&gt;&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gist.github.com/maoe/e5888fad16a190a9c7cf58b8bedb1d04"&gt;maoe 氏の資料&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="compact-regions"&gt;Compact Regions&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/ezyang/compact"&gt;ezyang/compact - GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;処理系によってGCされないデータ領域&lt;/li&gt;
+&lt;li&gt;インターフェースは充実してる&lt;/li&gt;
+&lt;li&gt;ただしデータの追加しかできない（書き換えは不可）&lt;/li&gt;
+&lt;li&gt;Q: 何に使える？
+&lt;ul&gt;
+&lt;li&gt;強大な辞書とか？&lt;/li&gt;
+&lt;li&gt;設定ファイルとか？（巨大なら）&lt;/li&gt;
+&lt;li&gt;NGワード集とか？&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;GHC8.x 勉強会のあとに記事にしてくれた:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://qiita.com/ruicc/items/c955e794c5dc74c4cb58"&gt;Compact Regionsについて軽く - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="backpack"&gt;Backpack&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://ghc.haskell.org/trac/ghc/wiki/Backpack"&gt;Backpack – GHC&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;雑にいうと: ML系のファンクターのようなより強力なモジュールシステム&lt;/li&gt;
+&lt;li&gt;モジュールのインターフェースと実装を分離できる&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://matsubara0507.github.io/posts/2017-12-12-backpack-memo.html"&gt;Haskell Backpack 覚え書き - ひげメモ&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;自分の記事だけど1年近く前で覚えてない(笑)&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Q: どんな時に有用？
+&lt;ul&gt;
+&lt;li&gt;本質的には型クラスと同じ用途のはず&lt;/li&gt;
+&lt;li&gt;ただし型に依存しない（型クラスは型によって実装をディスパッチ）&lt;/li&gt;
+&lt;li&gt;不自然な &lt;code&gt;Proxy a&lt;/code&gt; を渡さなくていい（苦肉の策でそういう実装をしている型クラスがある）&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;そういえば最近 &lt;a href="https://github.com/kowainik/containers-backpack"&gt;contains の Backpack 版&lt;/a&gt;がでた&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;作者さんが忙しくて Stack への適用を断念したため，なかなか浸透しない． 今「Stack への適用をやりたい」という人が現れたが時間がかかりそう．&lt;/p&gt;
+&lt;h3 id="脱線-各位リンカどうしてるの"&gt;脱線: 各位リンカどうしてるの？&lt;/h3&gt;
+&lt;p&gt;kazu yamamoto 氏が GHC 8.6 になってから(だっけ？)リンカ周りで動作しなくて困ってるらしい(OS は Mac)． 僕は適当にやってて困ったことないのでよくわからない．&lt;/p&gt;
+&lt;p&gt;ちなみに GHC 8.6.3 で無事動いたらしい:&lt;/p&gt;
+&lt;blockquote class="twitter-tweet" data-lang="ja"&gt;
+&lt;p lang="ja" dir="ltr"&gt;
+吉報：GHC 8.6.3 は macOS で問題なく使えるようになりました！
+&lt;/p&gt;
+— 山本和彦 (&lt;span class="citation" data-cites="kazu_yamamoto"&gt;@kazu_yamamoto&lt;/span&gt;) &lt;a href="https://twitter.com/kazu_yamamoto/status/1072030847799255040?ref_src=twsrc%5Etfw"&gt;2018年12月10日&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+&lt;h2 id="section-3"&gt;8.4&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://downloads.haskell.org/~ghc/8.4.4/docs/html/users_guide/8.4.1-notes.html"&gt;リリースノートはこれ&lt;/a&gt;．&lt;/p&gt;
+&lt;p&gt;そういえば，8.4.4 は 8.6 系が出てから出て，ちゃんとバグフィックス出すんだと感心した的な話をした．&lt;/p&gt;
+&lt;h3 id="semigroup-monoid-proposal"&gt;Semigroup-Monoid Proposal&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Monoid&lt;/code&gt; にサブクラスとして &lt;code&gt;Semigroup&lt;/code&gt; を持たせる
+&lt;ul&gt;
+&lt;li&gt;その方が数学的に自然&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://kazu-yamamoto.hatenablog.jp/entry/20180306/1520314185"&gt;あなたの知らないSemigroupの世界 - あどけない話&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;前のバージョンアから &lt;code&gt;-Wnoncanonical-monoid-instances&lt;/code&gt; などの警告を付け足して段階的にやっている
+&lt;ul&gt;
+&lt;li&gt;しかし &lt;code&gt;-Wall&lt;/code&gt; に含まれてないので気づかず&lt;/li&gt;
+&lt;li&gt;なんか 8.4 で急にエラーに&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;ちなみに以降は &lt;code&gt;Monoid&lt;/code&gt; をインポートしなくても &lt;code&gt;(&amp;lt;&amp;gt;)&lt;/code&gt; が使える&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="monadfail-と-no-return"&gt;MonadFail と no return&lt;/h3&gt;
+&lt;p&gt;ここは脱線．&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://wiki.haskell.org/MonadFail_Proposal"&gt;MonadFail Proposal - HaskellWiki&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Monad&lt;/code&gt; には &lt;code&gt;fail&lt;/code&gt; が定義されている
+&lt;ul&gt;
+&lt;li&gt;が &lt;code&gt;error&lt;/code&gt; などを利用している残念な実装もある&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MonadFail&lt;/code&gt; という型クラスで切り出す&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-Wnoncanonical-monadfail-instances&lt;/code&gt; ができた？&lt;/li&gt;
+&lt;li&gt;8.6: &lt;a href="https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-MonadFailDesugaring"&gt;&lt;code&gt;MonadFailDesugaring&lt;/code&gt;&lt;/a&gt; 言語拡張がデフォルトに
+&lt;ul&gt;
+&lt;li&gt;do 記法の &lt;code&gt;fail&lt;/code&gt; への脱糖が &lt;code&gt;MonadFail&lt;/code&gt; のものになる&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="section-4"&gt;8.6&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/8.6.1-notes.html"&gt;リリースノートはこれ&lt;/a&gt;．&lt;/p&gt;
+&lt;h3 id="quantifiedconstraints"&gt;QuantifiedConstraints&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-QuantifiedConstraints"&gt;QuantifiedConstraints&lt;/a&gt; 言語拡張を追加&lt;/li&gt;
+&lt;li&gt;インスタンスの定義に量化が使える
+&lt;ul&gt;
+&lt;li&gt;例: &lt;code&gt;instance (Eq a, forall b. (Eq b) =&amp;gt; Eq (f b)) =&amp;gt; Eq (Rose f a)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://the.igreque.info/slides/2018-12-07-ghc8x.html"&gt;igrap 氏の資料&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Q: Constraint のシノニムでも使える？
+&lt;ul&gt;
+&lt;li&gt;無理だった orz&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="derivingvia"&gt;DerivingVia&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#extension-DerivingVia"&gt;&lt;code&gt;DerivingVia&lt;/code&gt;&lt;/a&gt; 言語拡張について&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;via&lt;/code&gt; キーワードを使ってインスタンスを明示的に選択できるようになる&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/kayhide/try-ghc86"&gt;kayhide 氏の資料&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;QuickCheck の例&lt;/li&gt;
+&lt;li&gt;テストの実装を Via で定義&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;わかりやすい&lt;a href="https://speakerdeck.com/konn/ben-dang-hasugoi-newtype"&gt;スライド&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;後半の方&lt;/li&gt;
+&lt;li&gt;タプルの例&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="plugin-mechanism"&gt;Plugin mechanism&lt;/h3&gt;
+&lt;p&gt;(誰も調べてはない) ちょうど記事があった&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://qiita.com/waddlaw/items/65b57517f105fcbbe724"&gt;GHC Source Plugin 作ってみた - Qiita&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;終わった後の雑談で，Scala には似たような機能(Scala Compiler Plugins?)が既にあるので，真似するといいとかなんとか．&lt;/p&gt;
+&lt;h3 id="valid-hole-fits"&gt;Valid hole fits&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://wiki.haskell.org/GHC/Typed_holes"&gt;Type holes&lt;/a&gt; という機能についての拡張
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://haskell.jp/blog/posts/2017/07-TypedHoles.html"&gt;Type Hole については Haskell-jp に記事がある&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#typed-hole-valid-hole-fits"&gt;コンパイルフラグ&lt;/a&gt;で type Holes での推論アルゴリズム(?)のコントロールができるようになった(って感じかな)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="シンタックスの言語拡張"&gt;シンタックスの言語拡張&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;数値リテラルに &lt;code&gt;_&lt;/code&gt; が使える: &lt;code&gt;10_000_000&lt;/code&gt; とか&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;do&lt;/code&gt; 記法の前に &lt;code&gt;$&lt;/code&gt; などがいらなくなる: &lt;code&gt;\x -&amp;gt; do ...&lt;/code&gt; とか&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1 id="おしまい"&gt;おしまい&lt;/h1&gt;
+&lt;p&gt;時間経ちすぎてめっちゃ適当になってしまった． すいません． ただ，めっちゃ楽しかった．&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/article&gt;
+</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/01/cygwin-cygwin.html</id><title type="text">[cygwin] cygwinセットアップ・環境構築手順メモ</title><updated>2018-12-16T14:31:09.194+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/01/cygwin-cygwin.html"/><summary type="text">
 
 主に自分向けの防備録です。windows10上で確認。インストーラーはここからDLする。
 
@@ -1285,72 +1569,7 @@ https://github.com/commercialhaskell/stack-templates/blob/master/rio.hsfiles&lt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;/article&gt;
-</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B</id><title type="text">Windows で haskell-ide-engine をビルドする</title><updated>2018-08-16T17:34:50+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"/><summary type="html">手順 1. ソースコード取得。 git clone git@github.com:haskell/haskell-ide-engine.git 2. Unicode を扱う ICU の古いバージョンが要るので取得。 自分の使うバージョンの text-icu の changelog を見て、必要な ICU のバージョンを探す。執筆時点では 53 だった。 http://site.icu-project.org/download/53#TOC-ICU4C-Download 任意の場所に展開する。以降、展開先の箇所を $icu と表記する。 $icu\bin64 にある dll の名前を変える。（要…</summary></entry><entry><id>http://ccvanishing.hateblo.jp/entry/2018/08/01/055608</id><title type="text">July Tech Festa 2018 で分散システムの検証について話してきました / #JTF2018</title><updated>2018-08-01T13:56:39+09:00</updated><author><name>チェシャ猫</name></author><link href="http://ccvanishing.hateblo.jp/entry/2018/08/01/055608"/><summary type="html">先日行われた July Tech Festa 2018 で、モデル検査を使った分散アルゴリズムの検証について発表してきました。 前半はオートマトンによるシステムの記述と検査の基礎について、後半は三種類のツール SPIN、TLA+、P による記述方法の紹介、といった内容です。 後半のソースコード紹介が散文的な感じになってしまって、いまいちメリットが伝わらない感じだったので、次回があればもっとエモいスライドにしようと思います。 分散アルゴリズムの形式化 定理証明による検証 今回の話の流れとして「分散システムにはモデル検査が有効」と述べていますが、必ずしも定理証明が分散システムの検証に向かないという…</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE</id><title type="text">入社</title><updated>2018-08-01T00:00:56+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE"/><summary type="html">本日付けで IIJ に入社します。 職業 Haskeller になる……はず。</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7</id><title type="text">退職</title><updated>2018-07-31T22:30:05+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7"/><summary type="html">2013年に新卒で入社した KLab を今日付けで退職しました。</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/21/114826</id><title type="text">LTS-12.1でhpack-convertコンパイルできないんすよねー</title><updated>2018-07-21T11:48:26+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/21/114826"/><summary type="html">そんなこともあろうかと、forkして lts-12.1 ブランチ用意しておきましたので。 github.com まあ、ただの変換ツールなので、古いLTSでビルドしても構わない気はするけど、新しいマシンだと ghc インストールさせたりするのだるかったので。 ということで、手元のリポジトリももろもろ hpack に乗り換えようとしてるのだった。 https://github.com/hiratara/hs-server-starter/pull/4 https://github.com/hiratara/hs-reqcatcher/pull/2 https://github.com/hirata…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2018/07/14/195255</id><title type="text">Dhallによるリッチな設定ファイル体験</title><updated>2018-07-14T19:52:55+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2018/07/14/195255"/><summary type="html">(この記事のレギュレーション: lts-11.9) Dhall という設定記述用言語があり、使ってみたところ良い感じだったので紹介します。 なお、この記事は先日某所で発表したものの拡大版になります。 speakerdeck.com Dhallとは何か Dhallについて短かく表現するなら公式サイトの以下の説明が分かりやすいです。 You can think of Dhall as: JSON + functions + types + imports データ表現にプログラマブルさと静的な検査とファイルのインポートを加えたものというわけです。 まだ開発中のためかあまりアピールされていませんがツー…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/14/175016</id><title type="text">Haskell入門のサンプルコードのLTS-12.0対応 </title><updated>2018-07-14T17:50:16+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/14/175016"/><summary type="html">つい半年前に最新のLTSへ対応したばかりなのに、気がつくと LTS-12.0 が出て、 ghc-8.4 を Stack から使えるようになった。コミュニティが活発で、非常にありがたいことである。 ということで、 Haskell入門 のサンプルもLTS-12.0に対応させたブランチを用意した。と言っても、いくつか Stackge の管理下から外れてしまったパッケージが出てきたのを調整したくらいで、コードは何も変更していない。 github.com さらに素晴らしいことに、これらのコードはすべてWindows 10の最新の WSL 上で動くことを確認できた。macOS上で試すのと同様に、 Wind…</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-07-01-join-ruby-hack-challenge4.html</id><title type="text">Ruby Hack Challenge ＃4 に参加してきた</title><updated>2018-07-01T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-07-01-join-ruby-hack-challenge4.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
- &lt;div class="card-content"&gt;
-  &lt;header class="post-header"&gt;
-    &lt;h1 class="post-title" itemprop="name headline"&gt;Ruby Hack Challenge ＃4 に参加してきた&lt;/h1&gt;
-    &lt;p class="post-meta"&gt;
-      &lt;time datetime="2018-07-01" itemprop="datePublished"&gt;
-        Jul 1, 2018
-      &lt;/time&gt;
-      
-      
-      &lt;div class="tags"&gt;
-          &lt;i class="fa fa-tags"&gt;&lt;/i&gt; &lt;a href="/tags/Ruby.html"&gt;Ruby&lt;/a&gt; &lt;a href="/tags/event.html"&gt;event&lt;/a&gt;
-      &lt;/div&gt;
-      
-    &lt;/p&gt;
-  &lt;/header&gt;
-
-  &lt;div class="post-content" itemprop="articleBody"&gt;
-    &lt;p&gt;先週 &lt;a href="https://cookpad.connpass.com/event/88471/"&gt;Ruby Hack Cavalage #4&lt;/a&gt; に参加してきたので，そのメモ書きです．&lt;/p&gt;
-&lt;p&gt;ちなみに，Ruby は自分が最初に触ったスクリプト言語で，現在仕事で使っているメインの言語です． 推し言語(Haskell)とは異なり，動的型付けではありますが，「&lt;a href="http://i.loveruby.net/ja/rhg/book/"&gt;Rubyソースコード完全解説&lt;/a&gt;」や「&lt;a href="https://tatsu-zine.com/books/ruby-under-a-microscope-ja"&gt;Rubyのしくみ&lt;/a&gt;」のような処理系内部を紹介してる読み物も多く，かなり好きな方な言語です.&lt;/p&gt;
-&lt;h2 id="ruby-hack-challenge"&gt;Ruby Hack Challenge&lt;/h2&gt;
-&lt;p&gt;Ruby 処理系をハックしようというイベントで，コアコミッタの &lt;a href="https://github.com/mame"&gt;mame&lt;/a&gt; 氏と &lt;a href="https://github.com/ko1"&gt;ko1&lt;/a&gt; 氏が講師として企画してくれている． ふたりが在籍しているということで，会場はクックパッドで行っている．&lt;/p&gt;
-&lt;p&gt;毎回，前半に講義的なものがあり，後半で実際に手を動かして Ruby にコミットするといった感じらしい． ただし，2日開催だったり，半日だったり時間はまちまち(今回は半日だった)． イベント名的に Ruby のハッカソンみたいだが，Ruby 処理系はC言語で書かれているためC言語を書くことになる(笑)&lt;/p&gt;
-&lt;h3 id="カバレッジ特別会"&gt;カバレッジ特別会&lt;/h3&gt;
-&lt;p&gt;しかし，4回目(となっているが3回目が見当たらないので3回目かも？？)となる今回は，カバレッジ特別会ということで多くの人たちが Ruby を読み書きしていた． なぜかというと，標準ライブラリは Ruby で書かれており，今回は標準ライブラリのテストカバレッジをあげても良かったからだ． というか，C で書かれているコア部分は mame 氏が昔に大分カバレッジをあげてしまったため，そっちをやるのは難しいと言っていた．&lt;/p&gt;
-&lt;h2 id="section"&gt;&lt;/h2&gt;
-&lt;p&gt;C言語の部分で残っているとすれば本質的に難しい部分(副作用とか並行並列とか)か最近追加された部分か(JITとか？)だそうだ．&lt;/p&gt;
-&lt;h3 id="資料"&gt;資料&lt;/h3&gt;
-&lt;p&gt;今までのも含め，資料は(いくつか？)公開されているので誰でも見れる．&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/ko1/rubyhackchallenge"&gt;ko1/rubyhackchallenge - GitHub&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.slideshare.net/mametter/ruby-hack-challenge-4"&gt;Ruby Hack Challenge #4 カバレッジ特別回 資料 - SlideShare&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;また Gitter で連絡を取り合っており，実は誰でも参加できる(たぶん)．&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://gitter.im/rubyhackchallenge/Lobby"&gt;rubyhackchallenge/Lobby - Gitter&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="section-1"&gt;&lt;/h2&gt;
-&lt;p&gt;ちなみに，ボクはもともとこのイベントは参加したいなぁと思っていた(言語好きなので)．&lt;/p&gt;
-&lt;h2 id="ruby-のテストカバレッジ"&gt;Ruby のテストカバレッジ&lt;/h2&gt;
-&lt;p&gt;Ruby のテストカバレッジは Web から確認できる．&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://rubyci.s3.amazonaws.com/debian8-coverage/ruby-trunk/lcov/index.html"&gt;LCOV - code coverage report&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;これを見てカバレッジの低いところにねらい目を付けてテストを追加する(ないしは不要な実装なら削る)． 標準ライブラリのいくつかは個別に GitHub で管理されているので，GitHub で管理されてる場合はそっちに PR を投げれば良いようだ(今回は事情が共有されてたせいかすぐマージされた)．&lt;/p&gt;
-&lt;h2 id="section-2"&gt;&lt;/h2&gt;
-&lt;p&gt;ちなみに，&lt;a href="https://github.com/ruby/ruby/blob/trunk/doc/maintainers.rdoc"&gt;ココ&lt;/a&gt;を見ると誰がメンテナーで，どこに報告すれば良いかが書いてある．&lt;/p&gt;
-&lt;h3 id="環境構築"&gt;環境構築&lt;/h3&gt;
-&lt;p&gt;は事前にやっとくと，当日はすんなりコミットできた(構築方法はスライドに書いてある)． 事前にって言ってもぼくは行きの電車でやったけど(笑)&lt;/p&gt;
-&lt;p&gt;Windows と Mac を持ってるけど，どっちも素でやるのは難しいので，Debian の Docker コンテナの上で構築した． Docker ありがとう！ ビルドがめっちゃ遅いけどね！&lt;/p&gt;
-&lt;h2 id="当日やったこと"&gt;当日やったこと&lt;/h2&gt;
-&lt;p&gt;すっっっごい簡単にカバレッジをあげれそうなのがあったのサクッと直して PR をだした．&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/ruby/cmath/pull/2"&gt;Add test for coverage by matsubara0507 · Pull Request #2 · ruby/cmath&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;code&gt;CMath&lt;/code&gt; モジュールは &lt;code&gt;Math&lt;/code&gt; モジュールをラップして複素数(Complex number)にまで対応させたものだ． そのため，虚数を含む複素数に関するテストしかなく，実数に関するテストが無かったためカバレッジが低かった． 愚直に全部書いたら100%まで行きましたちゃんちゃんってだけです．&lt;/p&gt;
-&lt;h2 id="section-3"&gt;&lt;/h2&gt;
-&lt;p&gt;ちなみに，他にも4,5個ほど PR が出ていた． すごいね！&lt;/p&gt;
-&lt;h2 id="もくもく会"&gt;もくもく会&lt;/h2&gt;
-&lt;p&gt;あと，Ruby Hack Challenge もくもく会というのがあるらしいので行ってみたい(&lt;a href="https://connpass.com/event/93131/"&gt;次回はこれ&lt;/a&gt;)． MJIT のコードとか読んでみたいよね． それと型検査(はどうなるかまだ分からないらしいけど)．&lt;/p&gt;
-&lt;h2 id="おしまい"&gt;おしまい&lt;/h2&gt;
-&lt;p&gt;そういえば，ko1 氏がお子さんと奥さんを連れてきていた(たぶん)． そういう事に理解のある会社っていいなぁと感じた．&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;/article&gt;
-</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2017/11/17/090000</id><title type="text">zshの標準エラー出力の色を赤くする</title><updated>2018-06-29T14:22:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2017/11/17/090000"/><summary type="html">[追記]以下の方法は良くないようです。必ず、このエントリー最後の「stderredを使う」を参照してください[/追記] 最近stderrを赤くするように設定したら、コマンドの出力がかなり見やすくなりました。 設定はこんな感じに書いてます。 zmodload zsh/terminfo zsh/system color_stderr() { while sysread std_err_color; do syswrite -o 2 "${fg_bold[red]}${std_err_color}${terminfo[sgr0]}" done } exec 2&gt; &gt;(color_stderr) fg…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2016/12/04/120000</id><title type="text">珍しいSHA1ハッシュを追い求めて</title><updated>2018-06-29T08:55:02+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2016/12/04/120000"/><summary type="html">「SHA1ハッシュってあるだろう？」 放課後、いつものように情報処理室に行くと、高山先輩が嬉しそうな顔でそう言った。 「ええ、SHA1、ありますね」 「SHA1って何桁か覚えているかい？」 「えっと…」 一年下の後輩、岡村が口を開いた。 「50桁くらいはありましたっけ…？」 先輩はパソコンに向かって何かを打ちはじめた。 現在、情報部の部員は三人しかいない。部長の高山先輩と、二年の自分と、後輩の岡村だ。いや、正確に言うと、先輩の学年にはもう少しいたのだが、もうほとんど部室に来ることはなくなってしまった。無理もない、この季節になると先輩たちは受験勉強で忙しくなる。 「例えば、こういうふうに… 適当…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2018/06/25/130000</id><title type="text">はてな・ペパボ技術大会 #4 〜DevOps〜 @京都 で登壇しました</title><updated>2018-06-25T13:40:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2018/06/25/130000"/><summary type="html">先日 6/23 に技術イベント「はてな・ペパボ技術大会 #4 〜DevOps〜 @京都」で登壇・トークセッションに参加しました。 hatena.connpass.com 普段の業務でDevOpsという言葉を使うことはありません。 しかし、DevOpsのあり方を見直した結果が現状の体制や仕事のフローであったり、あるいはこれからやろうとしていることにつながっているのだと思います。 技術の進歩によりDockerやGraphQLといった、レイヤー間の共通言語が発達する中で、ソフトウェア間あるいはチーム間が疎結合になっていくことはよいです。 一方でそういう技術で解決できない場面も残っていくのだろうなと思…</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html</id><title type="text">[linux][cygwin] unzipコマンドで "error:  invalid compressed data to inflate" というエラーメッセージがでたら？</title><updated>2018-06-06T01:11:48.468+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html"/><summary type="text">zipアーカイブの中に長さが0のファイルが含まれていると、unzipコマンドでは以下のようなエラーメッセージが表示されて、解凍することができません。アーカイブが壊れていなくてもエラーになります。
+</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B</id><title type="text">Windows で haskell-ide-engine をビルドする</title><updated>2018-08-16T17:34:50+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"/><summary type="html">手順 1. ソースコード取得。 git clone git@github.com:haskell/haskell-ide-engine.git 2. Unicode を扱う ICU の古いバージョンが要るので取得。 自分の使うバージョンの text-icu の changelog を見て、必要な ICU のバージョンを探す。執筆時点では 53 だった。 http://site.icu-project.org/download/53#TOC-ICU4C-Download 任意の場所に展開する。以降、展開先の箇所を $icu と表記する。 $icu\bin64 にある dll の名前を変える。（要…</summary></entry><entry><id>http://ccvanishing.hateblo.jp/entry/2018/08/01/055608</id><title type="text">July Tech Festa 2018 で分散システムの検証について話してきました / #JTF2018</title><updated>2018-08-01T13:56:39+09:00</updated><author><name>チェシャ猫</name></author><link href="http://ccvanishing.hateblo.jp/entry/2018/08/01/055608"/><summary type="html">先日行われた July Tech Festa 2018 で、モデル検査を使った分散アルゴリズムの検証について発表してきました。 前半はオートマトンによるシステムの記述と検査の基礎について、後半は三種類のツール SPIN、TLA+、P による記述方法の紹介、といった内容です。 後半のソースコード紹介が散文的な感じになってしまって、いまいちメリットが伝わらない感じだったので、次回があればもっとエモいスライドにしようと思います。 分散アルゴリズムの形式化 定理証明による検証 今回の話の流れとして「分散システムにはモデル検査が有効」と述べていますが、必ずしも定理証明が分散システムの検証に向かないという…</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE</id><title type="text">入社</title><updated>2018-08-01T00:00:56+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE"/><summary type="html">本日付けで IIJ に入社します。 職業 Haskeller になる……はず。</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7</id><title type="text">退職</title><updated>2018-07-31T22:30:05+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7"/><summary type="html">2013年に新卒で入社した KLab を今日付けで退職しました。</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/21/114826</id><title type="text">LTS-12.1でhpack-convertコンパイルできないんすよねー</title><updated>2018-07-21T11:48:26+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/21/114826"/><summary type="html">そんなこともあろうかと、forkして lts-12.1 ブランチ用意しておきましたので。 github.com まあ、ただの変換ツールなので、古いLTSでビルドしても構わない気はするけど、新しいマシンだと ghc インストールさせたりするのだるかったので。 ということで、手元のリポジトリももろもろ hpack に乗り換えようとしてるのだった。 https://github.com/hiratara/hs-server-starter/pull/4 https://github.com/hiratara/hs-reqcatcher/pull/2 https://github.com/hirata…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2018/07/14/195255</id><title type="text">Dhallによるリッチな設定ファイル体験</title><updated>2018-07-14T19:52:55+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2018/07/14/195255"/><summary type="html">(この記事のレギュレーション: lts-11.9) Dhall という設定記述用言語があり、使ってみたところ良い感じだったので紹介します。 なお、この記事は先日某所で発表したものの拡大版になります。 speakerdeck.com Dhallとは何か Dhallについて短かく表現するなら公式サイトの以下の説明が分かりやすいです。 You can think of Dhall as: JSON + functions + types + imports データ表現にプログラマブルさと静的な検査とファイルのインポートを加えたものというわけです。 まだ開発中のためかあまりアピールされていませんがツー…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/14/175016</id><title type="text">Haskell入門のサンプルコードのLTS-12.0対応 </title><updated>2018-07-14T17:50:16+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/14/175016"/><summary type="html">つい半年前に最新のLTSへ対応したばかりなのに、気がつくと LTS-12.0 が出て、 ghc-8.4 を Stack から使えるようになった。コミュニティが活発で、非常にありがたいことである。 ということで、 Haskell入門 のサンプルもLTS-12.0に対応させたブランチを用意した。と言っても、いくつか Stackge の管理下から外れてしまったパッケージが出てきたのを調整したくらいで、コードは何も変更していない。 github.com さらに素晴らしいことに、これらのコードはすべてWindows 10の最新の WSL 上で動くことを確認できた。macOS上で試すのと同様に、 Wind…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2017/11/17/090000</id><title type="text">zshの標準エラー出力の色を赤くする</title><updated>2018-06-29T14:22:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2017/11/17/090000"/><summary type="html">[追記]以下の方法は良くないようです。必ず、このエントリー最後の「stderredを使う」を参照してください[/追記] 最近stderrを赤くするように設定したら、コマンドの出力がかなり見やすくなりました。 設定はこんな感じに書いてます。 zmodload zsh/terminfo zsh/system color_stderr() { while sysread std_err_color; do syswrite -o 2 "${fg_bold[red]}${std_err_color}${terminfo[sgr0]}" done } exec 2&gt; &gt;(color_stderr) fg…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2016/12/04/120000</id><title type="text">珍しいSHA1ハッシュを追い求めて</title><updated>2018-06-29T08:55:02+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2016/12/04/120000"/><summary type="html">「SHA1ハッシュってあるだろう？」 放課後、いつものように情報処理室に行くと、高山先輩が嬉しそうな顔でそう言った。 「ええ、SHA1、ありますね」 「SHA1って何桁か覚えているかい？」 「えっと…」 一年下の後輩、岡村が口を開いた。 「50桁くらいはありましたっけ…？」 先輩はパソコンに向かって何かを打ちはじめた。 現在、情報部の部員は三人しかいない。部長の高山先輩と、二年の自分と、後輩の岡村だ。いや、正確に言うと、先輩の学年にはもう少しいたのだが、もうほとんど部室に来ることはなくなってしまった。無理もない、この季節になると先輩たちは受験勉強で忙しくなる。 「例えば、こういうふうに… 適当…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2018/06/25/130000</id><title type="text">はてな・ペパボ技術大会 #4 〜DevOps〜 @京都 で登壇しました</title><updated>2018-06-25T13:40:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2018/06/25/130000"/><summary type="html">先日 6/23 に技術イベント「はてな・ペパボ技術大会 #4 〜DevOps〜 @京都」で登壇・トークセッションに参加しました。 hatena.connpass.com 普段の業務でDevOpsという言葉を使うことはありません。 しかし、DevOpsのあり方を見直した結果が現状の体制や仕事のフローであったり、あるいはこれからやろうとしていることにつながっているのだと思います。 技術の進歩によりDockerやGraphQLといった、レイヤー間の共通言語が発達する中で、ソフトウェア間あるいはチーム間が疎結合になっていくことはよいです。 一方でそういう技術で解決できない場面も残っていくのだろうなと思…</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html</id><title type="text">[linux][cygwin] unzipコマンドで "error:  invalid compressed data to inflate" というエラーメッセージがでたら？</title><updated>2018-06-06T01:11:48.468+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html"/><summary type="text">zipアーカイブの中に長さが0のファイルが含まれていると、unzipコマンドでは以下のようなエラーメッセージが表示されて、解凍することができません。アーカイブが壊れていなくてもエラーになります。
 % unzip hoge.zip
   error:  invalid compressed data to inflate
 
