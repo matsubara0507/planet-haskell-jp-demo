@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2018-12-19T00:00:00Z</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://matsubara0507.github.io/posts/2018-12-19-create-lifegame.html</id><title type="text">Elm 0.19 で作るライフゲーム</title><updated>2018-12-19T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-12-19-create-lifegame.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2018-12-19T09:22:10.151+09:00</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://kurokawh.blogspot.com/2018/02/windows-windows10.html</id><title type="text">[windows] Windows10セットアップ・設定項目のメモ</title><updated>2018-12-19T09:22:10.151+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/02/windows-windows10.html"/><summary type="text">Windows10セットアップ時の設定項目、インストールアプリの備忘録。
+
+
+スタートメニュー・タスクバーの設定
+
+タスクバーの設定 
+
+小さいタスクバーボタンを使う：オン 
+[スタート]ボタンを右クリックするかWindowsキー＋Xキーを押したときに表示されるメニューで、コマンドプロンプトをWindows PowerShellに置き換える：オフ
+タスクバーボタンを結合する
+
+「タスクバーに入りきらない場合」を選択
+
+タスクバーをすべての ディスプレイに表示する：オフ
+
+
+
+ Quick Launcherを表示する
+
+クイック起動を復活する 
+Windows 10 タスクバーにクイック起動を表示する
+
+スタートメニューにコントロールパネルを表示する
+
+「Windows 10」のコントロールパネルを表示する方法について
+
+スタートメニューにピン止めするアプリ：
+
+Windowsシステム</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-12-19-create-lifegame.html</id><title type="text">Elm 0.19 で作るライフゲーム</title><updated>2018-12-19T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-12-19-create-lifegame.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
  &lt;div class="card-content"&gt;
   &lt;header class="post-header"&gt;
     &lt;h1 class="post-title" itemprop="name headline"&gt;Elm 0.19 で作るライフゲーム&lt;/h1&gt;
@@ -1654,35 +1682,7 @@ $ stack --docker image container&lt;/code&gt;&lt;/pre&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;/article&gt;
-</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3</id><title type="text">Leica M3</title><updated>2018-11-15T10:47:47+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3"/><summary type="html">Lomography Konstruktor F・Diana Mini から始まったフィルムカメラ熱ですが一瞬で行くところまで行ってしまった感じです。 Leica M3。 現在まで続く M 型 Leica の始祖を買ってしまいました。1962年製の56歳です。 （この写真を撮ったレンズも Asahi Super Takumar 55mm F1.8 なので60年代のレンズです。） Leica 意識前 初めはフィルムカメラの入門機としていくつかの記事に紹介されていた Asahi Pentax SP か Olympus OM-1（M-1）かと考えて中古カメラ屋めぐりをしていました。 このころはひたす…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2017/06/12/090000</id><title type="text">コマンドラインがさらに便利になるfillinコマンドを作りました！</title><updated>2018-11-14T22:12:48+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2017/06/12/090000"/><summary type="html">fillinというコマンドラインツールを作成しました。 コマンドの一部を変数化して、別の履歴に保存しておけるツールです。 ステージング環境と本番環境のように、同じコマンドで複数の環境を切り替えるのに便利です。 zshの本 (エッセンシャルソフトウェアガイドブック)作者: 広瀬雄二,A5出版社/メーカー: 技術評論社発売日: 2009/06/17メディア: 単行本（ソフトカバー）購入: 11人 クリック: 126回この商品を含むブログ (37件) を見る どうして作ったの コマンド履歴って便利ですよね。 私はよくコマンド履歴からコマンドを選んで実行しています。 シェルに付属しているデフォルトの履…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/11/10/101541</id><title type="text">今日は Haskell Day 2018 の日です</title><updated>2018-11-10T18:01:57+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/11/10/101541"/><summary type="html">Haskell Day 2018 に来ましたので、自分用のメモを残しておきます。タグは #HaskellDay です。 作りながら学ぶHaskell入門 / @igrep さん 会場、懇親会のスポンサーは IIJ 様 (ありがとうございます！) mmlh コマンドで各自進める 課題の自動添削、たまにヒントを出してくれる わからなかったらメンターへ聞く Haskellを導入した話とHRRの紹介 / @khibinoさん 2008年 PerlからJavaを呼び出していた メンテナがいない、型検査がない Java, UNIXとの親和性があまりない 検討 =&gt; Common Lisp, OCaml, …</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/02/windows-windows10.html</id><title type="text">[windows] Windows10セットアップ・設定項目のメモ</title><updated>2018-11-06T11:47:03.776+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/02/windows-windows10.html"/><summary type="text">Windows10セットアップ時の設定項目、インストールアプリの備忘録。
-
-
-スタートメニュー・タスクバーの設定
-
-タスクバーの設定 
-
-小さいタスクバーボタンを使う：オン 
-[スタート]ボタンを右クリックするかWindowsキー＋Xキーを押したときに表示されるメニューで、コマンドプロンプトをWindows PowerShellに置き換える：オフ
-タスクバーボタンを結合する
-
-「タスクバーに入りきらない場合」を選択
-
-タスクバーをすべての ディスプレイに表示する：オフ
-
-
-
- Quick Launcherを表示する
-
-クイック起動を復活する 
-Windows 10 タスクバーにクイック起動を表示する
-
-スタートメニューにコントロールパネルを表示する
-
-「Windows 10」のコントロールパネルを表示する方法について
-
-スタートメニューにピン止めするアプリ：
-
-Windowsシステム</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-11-04-create-mdium.html</id><title type="text">Markdownで書いたテキストをMediumへポストする(mdium)</title><updated>2018-11-04T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-11-04-create-mdium.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+</summary></entry><entry><id>http://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3</id><title type="text">Leica M3</title><updated>2018-11-15T10:47:47+09:00</updated><author><name>岡本和樹</name></author><link href="http://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3"/><summary type="html">Lomography Konstruktor F・Diana Mini から始まったフィルムカメラ熱ですが一瞬で行くところまで行ってしまった感じです。 Leica M3。 現在まで続く M 型 Leica の始祖を買ってしまいました。1962年製の56歳です。 （この写真を撮ったレンズも Asahi Super Takumar 55mm F1.8 なので60年代のレンズです。） Leica 意識前 初めはフィルムカメラの入門機としていくつかの記事に紹介されていた Asahi Pentax SP か Olympus OM-1（M-1）かと考えて中古カメラ屋めぐりをしていました。 このころはひたす…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2017/06/12/090000</id><title type="text">コマンドラインがさらに便利になるfillinコマンドを作りました！</title><updated>2018-11-14T22:12:48+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2017/06/12/090000"/><summary type="html">fillinというコマンドラインツールを作成しました。 コマンドの一部を変数化して、別の履歴に保存しておけるツールです。 ステージング環境と本番環境のように、同じコマンドで複数の環境を切り替えるのに便利です。 zshの本 (エッセンシャルソフトウェアガイドブック)作者: 広瀬雄二,A5出版社/メーカー: 技術評論社発売日: 2009/06/17メディア: 単行本（ソフトカバー）購入: 11人 クリック: 126回この商品を含むブログ (37件) を見る どうして作ったの コマンド履歴って便利ですよね。 私はよくコマンド履歴からコマンドを選んで実行しています。 シェルに付属しているデフォルトの履…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/11/10/101541</id><title type="text">今日は Haskell Day 2018 の日です</title><updated>2018-11-10T18:01:57+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/11/10/101541"/><summary type="html">Haskell Day 2018 に来ましたので、自分用のメモを残しておきます。タグは #HaskellDay です。 作りながら学ぶHaskell入門 / @igrep さん 会場、懇親会のスポンサーは IIJ 様 (ありがとうございます！) mmlh コマンドで各自進める 課題の自動添削、たまにヒントを出してくれる わからなかったらメンターへ聞く Haskellを導入した話とHRRの紹介 / @khibinoさん 2008年 PerlからJavaを呼び出していた メンテナがいない、型検査がない Java, UNIXとの親和性があまりない 検討 =&gt; Common Lisp, OCaml, …</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-11-04-create-mdium.html</id><title type="text">Markdownで書いたテキストをMediumへポストする(mdium)</title><updated>2018-11-04T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-11-04-create-mdium.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
  &lt;div class="card-content"&gt;
   &lt;header class="post-header"&gt;
     &lt;h1 class="post-title" itemprop="name headline"&gt;Markdownで書いたテキストをMediumへポストする(mdium)&lt;/h1&gt;
