@@ -1,4 +1,298 @@
-<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2019-05-12T00:00:00Z</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://matsubara0507.github.io/posts/2019-05-12-create-my-github-cards.html</id><title type="text">GitHub Card を生成する SPA を Elm で作った</title><updated>2019-05-12T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2019-05-12-create-my-github-cards.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2019-05-16T00:00:00Z</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://matsubara0507.github.io/posts/2019-05-16-minruby-with-patternmatch.html</id><title type="text">Ruby のパターンマッチング機能を MinRuby で試す</title><updated>2019-05-16T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2019-05-16-minruby-with-patternmatch.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
+ &lt;div class="card-content"&gt;
+  &lt;header class="post-header"&gt;
+    &lt;h1 class="post-title" itemprop="name headline"&gt;Ruby のパターンマッチング機能を MinRuby で試す&lt;/h1&gt;
+    &lt;p class="post-meta"&gt;
+      &lt;time datetime="2019-05-16" itemprop="datePublished"&gt;
+        May 16, 2019
+      &lt;/time&gt;
+      
+      
+      &lt;div class="tags"&gt;
+          &lt;i class="fa fa-tags"&gt;&lt;/i&gt; &lt;a href="/tags/Ruby.html"&gt;Ruby&lt;/a&gt;
+      &lt;/div&gt;
+      
+    &lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;div class="post-content" itemprop="articleBody"&gt;
+    &lt;p&gt;Ruby 2.7 で導入予定で，すでに &lt;a href="https://github.com/ruby/ruby"&gt;Ruby リポジトリ&lt;/a&gt;の trunk (いわゆる master ブランチのこと) にマージ済みの「パターンマッチング」機能を試してみたので，そのメモ書きです． 特に包括的に検証したわけではないので注意してください．&lt;/p&gt;
+&lt;h2 id="パターンマッチング"&gt;パターンマッチング&lt;/h2&gt;
+&lt;p&gt;(わざわざ解説することでもないけど)&lt;/p&gt;
+&lt;p&gt;パターンマッチングは &lt;code&gt;if&lt;/code&gt; 文や &lt;code&gt;case&lt;/code&gt; 文のようなプログラムの分岐に使うプログラミング機能． &lt;code&gt;if&lt;/code&gt; 文が真偽値を返す条件式 (e.g. &lt;code&gt;a &amp;gt; 0 &amp;amp;&amp;amp; x == 'hoge'&lt;/code&gt;) の結果により分岐し，&lt;code&gt;case&lt;/code&gt; 文が指定した変数の値によって分岐するのに対し，パターンマッチングは指定した変数のデータ構造によって分岐する．&lt;/p&gt;
+&lt;p&gt;例えば Ruby に導入されたパターンマッチングだと次のようになる:&lt;/p&gt;
+&lt;div class="sourceCode" id="cb1"&gt;&lt;pre class="sourceCode ruby"&gt;&lt;code class="sourceCode ruby"&gt;&lt;a class="sourceLine" id="cb1-1" title="1"&gt;&lt;span class="kw"&gt;case&lt;/span&gt; var &lt;span class="co"&gt;# var のデータ構造により分岐&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-2" title="2"&gt;&lt;span class="kw"&gt;in&lt;/span&gt; []&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-3" title="3"&gt;  puts &lt;span class="st"&gt;&amp;quot;var is empty list&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-4" title="4"&gt;&lt;span class="kw"&gt;in&lt;/span&gt; [a]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-5" title="5"&gt;  puts &lt;span class="st"&gt;&amp;quot;var is singleton: &lt;/span&gt;&lt;span class="ot"&gt;#{&lt;/span&gt;a&lt;span class="ot"&gt;}&lt;/span&gt;&lt;span class="st"&gt;&amp;quot;&lt;/span&gt; &lt;span class="co"&gt;# 変数 a に値を代入する&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-6" title="6"&gt;&lt;span class="kw"&gt;in&lt;/span&gt; [&lt;span class="st"&gt;:hoge&lt;/span&gt;, a, b]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-7" title="7"&gt;  puts &lt;span class="st"&gt;&amp;quot;var is hoge list: &lt;/span&gt;&lt;span class="ot"&gt;#{&lt;/span&gt;[a, b]&lt;span class="ot"&gt;}&lt;/span&gt;&lt;span class="st"&gt;&amp;quot;&lt;/span&gt; &lt;span class="co"&gt;# 一要素目が :hoge の3要素リスト&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-8" title="8"&gt;&lt;span class="kw"&gt;else&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-9" title="9"&gt;  puts &lt;span class="st"&gt;&amp;quot;No match: &lt;/span&gt;&lt;span class="ot"&gt;#{&lt;/span&gt;var&lt;span class="ot"&gt;}&lt;/span&gt;&lt;span class="st"&gt;&amp;quot;&lt;/span&gt; &lt;span class="co"&gt;# else はどれにもマッチしないとき&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb1-10" title="10"&gt;&lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;このようにデータ構造(例えば配列の要素数など)によって分岐かつ変数への代入が可能になる． パターンマッチングは様々なデータを扱うようなプログラミングを行う時に極めて簡潔にかつ直感的にプログラムを記述することができる．&lt;/p&gt;
+&lt;p&gt;ちなみに，パターンマッチングがあれば基本的に &lt;code&gt;if&lt;/code&gt; 文も &lt;code&gt;case&lt;/code&gt; 文も要らない． どちらもパターンマッチングの糖衣構文として表現でき，現に Haskell ではそうなっている(たぶん)．&lt;/p&gt;
+&lt;h3 id="ruby-のパターンマッチング"&gt;Ruby のパターンマッチング&lt;/h3&gt;
+&lt;p&gt;ちょこちょこ既に記事があるが，RubyKaigi 2019 でも作者からの発表があり参考になる:&lt;/p&gt;
+&lt;iframe class="embedly-embed" src="//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fspeakerdeck.com%2Fplayer%2Fa853a73bba9d48ae88860f7c9b068334&amp;amp;url=https%3A%2F%2Fspeakerdeck.com%2Fk_tsj%2Fpattern-matching-new-feature-in-ruby-2-dot-7&amp;amp;image=https%3A%2F%2Fspeakerd.s3.amazonaws.com%2Fpresentations%2Fa853a73bba9d48ae88860f7c9b068334%2Fslide_0.jpg%3F510667&amp;amp;key=internal&amp;amp;type=text%2Fhtml&amp;amp;schema=speakerdeck" width="500" height="299" scrolling="no" frameborder="0" allow="autoplay; fullscreen" allowfullscreen="true"&gt;
+&lt;/iframe&gt;
+&lt;p&gt;すでに &lt;a href="https://www.youtube.com/watch?v=paBlgsqoKk8"&gt;YouTube で動画も公開された&lt;/a&gt;． ちなみに，2012 ぐらいからずっと作っていたらしい．&lt;/p&gt;
+&lt;p&gt;Elixir のピンパターン(&lt;code&gt;^var&lt;/code&gt;)など，数多くのパターンマッチング機能がある(後発の利点ですね)． ただし，変数のスコープが個人的には思ってたのと違った:&lt;/p&gt;
+&lt;div class="sourceCode" id="cb2"&gt;&lt;pre class="sourceCode ruby"&gt;&lt;code class="sourceCode ruby"&gt;&lt;a class="sourceLine" id="cb2-1" title="1"&gt;irb(main):&lt;span class="dv"&gt;001&lt;/span&gt;:&lt;span class="dv"&gt;0&lt;/span&gt;&amp;gt; &lt;span class="kw"&gt;case&lt;/span&gt; [&lt;span class="dv"&gt;1&lt;/span&gt;, &lt;span class="dv"&gt;2&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-2" title="2"&gt;irb(main):&lt;span class="dv"&gt;002&lt;/span&gt;:&lt;span class="dv"&gt;1&lt;/span&gt;&amp;gt; &lt;span class="kw"&gt;in&lt;/span&gt; [a, &lt;span class="dv"&gt;3&lt;/span&gt;] &lt;span class="kw"&gt;then&lt;/span&gt; p a&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-3" title="3"&gt;irb(main):&lt;span class="dv"&gt;003&lt;/span&gt;:&lt;span class="dv"&gt;1&lt;/span&gt;&amp;gt; &lt;span class="kw"&gt;in&lt;/span&gt; [b, c] &lt;span class="kw"&gt;then&lt;/span&gt; p c&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-4" title="4"&gt;irb(main):&lt;span class="dv"&gt;004&lt;/span&gt;:&lt;span class="dv"&gt;1&lt;/span&gt;&amp;gt; &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-5" title="5"&gt;&lt;span class="dv"&gt;2&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-6" title="6"&gt;=&amp;gt; &lt;span class="dv"&gt;2&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-7" title="7"&gt;irb(main):&lt;span class="dv"&gt;005&lt;/span&gt;:&lt;span class="dv"&gt;0&lt;/span&gt;&amp;gt; [a,b,c]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb2-8" title="8"&gt;=&amp;gt; [&lt;span class="dv"&gt;1&lt;/span&gt;, &lt;span class="dv"&gt;1&lt;/span&gt;, &lt;span class="dv"&gt;2&lt;/span&gt;]&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;in ..&lt;/code&gt; ごとにスコープは閉じてるのが一般的な気がするけど Ruby でそれは難しいのだろうか(&lt;code&gt;if&lt;/code&gt; 文や &lt;code&gt;case&lt;/code&gt; 文でもこんな感じの挙動)．&lt;/p&gt;
+&lt;h2 id="試す"&gt;試す&lt;/h2&gt;
+&lt;h3 id="ruby2.7-dev"&gt;Ruby2.7-dev&lt;/h3&gt;
+&lt;p&gt;前述した通り，パターンマッチングは trunk にマージされているので Ruby2.7-dev で試すことができる． trunk を試す方法はいくつかあると思うが，僕は手っ取り早く &lt;a href="https://github.com/rbenv/rbenv"&gt;rbenv&lt;/a&gt; を使った．&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ rbenv install 2.7.0-dev&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="minruby"&gt;MinRuby&lt;/h3&gt;
+&lt;p&gt;パターンマッチングを試す対象として，「&lt;a href="https://ascii.jp/elem/000/001/230/1230449/"&gt;Ruby で学ぶ Ruby&lt;/a&gt;」という連載で作っている，かなり簡易的な Ruby のサブセット処理系 MinRuby を利用する．&lt;/p&gt;
+&lt;p&gt;最終的な処理系は &lt;a href="https://github.com/matsubara0507/MinRuby.rb/blob/dbe9891f916877fc3c260135696f48344bceb98a/interp.rb"&gt;Ruby コード一枚&lt;/a&gt;でできている(一番めんどくさい構文解析を &lt;a href="https://github.com/ruby/ruby/tree/970a25b10415bc3735e6e3c165e167e6abc3d7f4/ext/ripper"&gt;ripper&lt;/a&gt; とそのラッパー &lt;a href="https://github.com/mame/minruby"&gt;minruby&lt;/a&gt; というのに任せているので):&lt;/p&gt;
+&lt;div class="sourceCode" id="cb4"&gt;&lt;pre class="sourceCode ruby"&gt;&lt;code class="sourceCode ruby"&gt;&lt;a class="sourceLine" id="cb4-1" title="1"&gt;&lt;span class="co"&gt;# interp.rb&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-2" title="2"&gt;require &lt;span class="st"&gt;&amp;quot;minruby&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-3" title="3"&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-4" title="4"&gt;&lt;span class="kw"&gt;def&lt;/span&gt; evaluate(tree, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-5" title="5"&gt;  &lt;span class="kw"&gt;case&lt;/span&gt; tree[&lt;span class="dv"&gt;0&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-6" title="6"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;lit&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-7" title="7"&gt;    tree[&lt;span class="dv"&gt;1&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-8" title="8"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-9" title="9"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) + evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-10" title="10"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;-&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-11" title="11"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) - evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-12" title="12"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;*&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-13" title="13"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) * evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-14" title="14"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-15" title="15"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) / evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-16" title="16"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;%&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-17" title="17"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) % evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-18" title="18"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;lt;&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-19" title="19"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) &amp;lt; evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-20" title="20"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;lt;=&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-21" title="21"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) &amp;lt;= evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-22" title="22"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;==&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-23" title="23"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) == evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-24" title="24"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;!=&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-25" title="25"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) != evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-26" title="26"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;gt;=&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-27" title="27"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) &amp;gt;= evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-28" title="28"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;gt;&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-29" title="29"&gt;    evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv) &amp;gt; evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-30" title="30"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;stmts&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-31" title="31"&gt;    i = &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-32" title="32"&gt;    last = &lt;span class="dv"&gt;nil&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-33" title="33"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; tree[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-34" title="34"&gt;      last = evaluate(tree[i], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-35" title="35"&gt;      i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-36" title="36"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-37" title="37"&gt;    last&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-38" title="38"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;var_assign&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-39" title="39"&gt;    lenv[tree[&lt;span class="dv"&gt;1&lt;/span&gt;]] = evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-40" title="40"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;var_ref&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-41" title="41"&gt;    lenv[tree[&lt;span class="dv"&gt;1&lt;/span&gt;]]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-42" title="42"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;if&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-43" title="43"&gt;    &lt;span class="kw"&gt;if&lt;/span&gt; evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-44" title="44"&gt;      evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-45" title="45"&gt;    &lt;span class="kw"&gt;else&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-46" title="46"&gt;      evaluate(tree[&lt;span class="dv"&gt;3&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-47" title="47"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-48" title="48"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;while&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-49" title="49"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-50" title="50"&gt;      evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-51" title="51"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-52" title="52"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;func_def&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-53" title="53"&gt;    genv[tree[&lt;span class="dv"&gt;1&lt;/span&gt;]] = [&lt;span class="st"&gt;&amp;quot;user_defined&amp;quot;&lt;/span&gt;, tree[&lt;span class="dv"&gt;2&lt;/span&gt;], tree[&lt;span class="dv"&gt;3&lt;/span&gt;]]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-54" title="54"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;func_call&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-55" title="55"&gt;    args = []&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-56" title="56"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-57" title="57"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; tree[i + &lt;span class="dv"&gt;2&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-58" title="58"&gt;      args[i] = evaluate(tree[i + &lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-59" title="59"&gt;      i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-60" title="60"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-61" title="61"&gt;    mhd = genv[tree[&lt;span class="dv"&gt;1&lt;/span&gt;]]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-62" title="62"&gt;    &lt;span class="kw"&gt;if&lt;/span&gt; mhd[&lt;span class="dv"&gt;0&lt;/span&gt;] == &lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-63" title="63"&gt;      minruby_call(mhd[&lt;span class="dv"&gt;1&lt;/span&gt;], args)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-64" title="64"&gt;    &lt;span class="kw"&gt;else&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-65" title="65"&gt;      new_lenv = {}&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-66" title="66"&gt;      params = mhd[&lt;span class="dv"&gt;1&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-67" title="67"&gt;      i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-68" title="68"&gt;      &lt;span class="kw"&gt;while&lt;/span&gt; params[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-69" title="69"&gt;        new_lenv[params[i]] = args[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-70" title="70"&gt;        i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-71" title="71"&gt;      &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-72" title="72"&gt;      evaluate(mhd[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, new_lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-73" title="73"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-74" title="74"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;ary_new&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-75" title="75"&gt;    ary = []&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-76" title="76"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-77" title="77"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; tree[i + &lt;span class="dv"&gt;1&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-78" title="78"&gt;      ary[i] = evaluate(tree[i + &lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-79" title="79"&gt;      i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-80" title="80"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-81" title="81"&gt;    ary&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-82" title="82"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;ary_ref&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-83" title="83"&gt;    ary = evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-84" title="84"&gt;    idx = evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-85" title="85"&gt;    ary[idx]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-86" title="86"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;ary_assign&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-87" title="87"&gt;    ary = evaluate(tree[&lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-88" title="88"&gt;    idx = evaluate(tree[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-89" title="89"&gt;    val = evaluate(tree[&lt;span class="dv"&gt;3&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-90" title="90"&gt;    ary[idx] = val&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-91" title="91"&gt;  &lt;span class="kw"&gt;when&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;hash_new&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-92" title="92"&gt;    hsh = {}&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-93" title="93"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-94" title="94"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; tree[i + &lt;span class="dv"&gt;1&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-95" title="95"&gt;      key = evaluate(tree[i + &lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-96" title="96"&gt;      val = evaluate(tree[i + &lt;span class="dv"&gt;2&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-97" title="97"&gt;      hsh[key] = val&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-98" title="98"&gt;      i = i + &lt;span class="dv"&gt;2&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-99" title="99"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-100" title="100"&gt;    hsh&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-101" title="101"&gt;  &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-102" title="102"&gt;&lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-103" title="103"&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-104" title="104"&gt;str = minruby_load()&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-105" title="105"&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-106" title="106"&gt;tree = minruby_parse(str)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-107" title="107"&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-108" title="108"&gt;genv = {&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-109" title="109"&gt;  &lt;span class="st"&gt;&amp;quot;p&amp;quot;&lt;/span&gt; =&amp;gt; [&lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;, &lt;span class="st"&gt;&amp;quot;p&amp;quot;&lt;/span&gt;],&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-110" title="110"&gt;  &lt;span class="st"&gt;&amp;quot;require&amp;quot;&lt;/span&gt; =&amp;gt; [&lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;, &lt;span class="st"&gt;&amp;quot;require&amp;quot;&lt;/span&gt;],&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-111" title="111"&gt;  &lt;span class="st"&gt;&amp;quot;minruby_parse&amp;quot;&lt;/span&gt; =&amp;gt; [&lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;, &lt;span class="st"&gt;&amp;quot;minruby_parse&amp;quot;&lt;/span&gt;],&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-112" title="112"&gt;  &lt;span class="st"&gt;&amp;quot;minruby_load&amp;quot;&lt;/span&gt; =&amp;gt; [&lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;, &lt;span class="st"&gt;&amp;quot;minruby_load&amp;quot;&lt;/span&gt;],&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-113" title="113"&gt;  &lt;span class="st"&gt;&amp;quot;minruby_call&amp;quot;&lt;/span&gt; =&amp;gt; [&lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;, &lt;span class="st"&gt;&amp;quot;minruby_call&amp;quot;&lt;/span&gt;],&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-114" title="114"&gt;}&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-115" title="115"&gt;lenv = {}&lt;/a&gt;
+&lt;a class="sourceLine" id="cb4-116" title="116"&gt;evaluate(tree, genv, lenv)&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;コードを見て分かるように(?)，配列の一引数目のリテラルで &lt;code&gt;case&lt;/code&gt; 文による分岐をし，分岐先で配列の要素を引っ張っている． このようにデータ構造 + &lt;code&gt;case&lt;/code&gt; 文による分岐はパターンマッチングにうってつけのユースケースだ．&lt;/p&gt;
+&lt;h3 id="minruby-パターンマッチング"&gt;MinRuby + パターンマッチング&lt;/h3&gt;
+&lt;p&gt;作業リポジトリはこれ:&lt;/p&gt;
+&lt;iframe width="426" height="162" scrolling="no" frameborder="0" src="https://matsubara0507.github.io/my-github-cards/?target=matsubara0507/MinRuby.rb"&gt;
+&lt;/iframe&gt;
+&lt;p&gt;&lt;code&gt;pattern-match&lt;/code&gt; というブランチにパターンマッチングで書き換えたコードがある． パターンマッチングで書き換えたのは &lt;code&gt;evaluate&lt;/code&gt; 関数だけなのでそこだけ載せる:&lt;/p&gt;
+&lt;div class="sourceCode" id="cb5"&gt;&lt;pre class="sourceCode ruby"&gt;&lt;code class="sourceCode ruby"&gt;&lt;a class="sourceLine" id="cb5-1" title="1"&gt;&lt;span class="kw"&gt;def&lt;/span&gt; evaluate(tree, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-2" title="2"&gt;  &lt;span class="kw"&gt;case&lt;/span&gt; tree&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-3" title="3"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;lit&amp;quot;&lt;/span&gt;, lit&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-4" title="4"&gt;    lit&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-5" title="5"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-6" title="6"&gt;    evaluate(exp1, genv, lenv) + evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-7" title="7"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;-&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-8" title="8"&gt;    evaluate(exp1, genv, lenv) - evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-9" title="9"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;*&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-10" title="10"&gt;    evaluate(exp1, genv, lenv) * evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-11" title="11"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-12" title="12"&gt;    evaluate(exp1, genv, lenv) / evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-13" title="13"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;%&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-14" title="14"&gt;    evaluate(exp1, genv, lenv) % evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-15" title="15"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;lt;&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-16" title="16"&gt;    evaluate(exp1, genv, lenv) &amp;lt; evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-17" title="17"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;lt;=&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-18" title="18"&gt;    evaluate(exp1, genv, lenv) &amp;lt;= evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-19" title="19"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;==&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-20" title="20"&gt;    evaluate(exp1, genv, lenv) == evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-21" title="21"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;!=&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-22" title="22"&gt;    evaluate(exp1, genv, lenv) != evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-23" title="23"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;gt;=&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-24" title="24"&gt;    evaluate(exp1, genv, lenv) &amp;gt;= evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-25" title="25"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;&amp;gt;&amp;quot;&lt;/span&gt;, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-26" title="26"&gt;    evaluate(exp1, genv, lenv) &amp;gt; evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-27" title="27"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;stmts&amp;quot;&lt;/span&gt;, *stmts&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-28" title="28"&gt;    last = &lt;span class="dv"&gt;nil&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-29" title="29"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-30" title="30"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; stmts[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-31" title="31"&gt;      last = evaluate(stmts[i], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-32" title="32"&gt;      i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-33" title="33"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-34" title="34"&gt;    last&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-35" title="35"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;var_assign&amp;quot;&lt;/span&gt;, var_name, var_value&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-36" title="36"&gt;    lenv[var_name] = evaluate(var_value, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-37" title="37"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;var_ref&amp;quot;&lt;/span&gt;, var_name&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-38" title="38"&gt;    lenv[var_name]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-39" title="39"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;if&amp;quot;&lt;/span&gt;, cond, exp1, exp2&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-40" title="40"&gt;    &lt;span class="kw"&gt;if&lt;/span&gt; evaluate(cond, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-41" title="41"&gt;      evaluate(exp1, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-42" title="42"&gt;    &lt;span class="kw"&gt;else&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-43" title="43"&gt;      evaluate(exp2, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-44" title="44"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-45" title="45"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;while&amp;quot;&lt;/span&gt;, cond, exp&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-46" title="46"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; evaluate(cond, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-47" title="47"&gt;      evaluate(exp, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-48" title="48"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-49" title="49"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;func_def&amp;quot;&lt;/span&gt;, func_name, func_args, func_body&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-50" title="50"&gt;    genv[func_name] = [&lt;span class="st"&gt;&amp;quot;user_defined&amp;quot;&lt;/span&gt;, func_args, func_body]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-51" title="51"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;func_call&amp;quot;&lt;/span&gt;, func_name, *func_args&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-52" title="52"&gt;    args = []&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-53" title="53"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-54" title="54"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; func_args[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-55" title="55"&gt;      args[i] = evaluate(func_args[i], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-56" title="56"&gt;      i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-57" title="57"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-58" title="58"&gt;    mhd = genv[func_name]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-59" title="59"&gt;    &lt;span class="kw"&gt;if&lt;/span&gt; mhd[&lt;span class="dv"&gt;0&lt;/span&gt;] == &lt;span class="st"&gt;&amp;quot;builtin&amp;quot;&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-60" title="60"&gt;      minruby_call(mhd[&lt;span class="dv"&gt;1&lt;/span&gt;], args)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-61" title="61"&gt;    &lt;span class="kw"&gt;else&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-62" title="62"&gt;      new_lenv = {}&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-63" title="63"&gt;      params = mhd[&lt;span class="dv"&gt;1&lt;/span&gt;]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-64" title="64"&gt;      i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-65" title="65"&gt;      &lt;span class="kw"&gt;while&lt;/span&gt; params[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-66" title="66"&gt;        new_lenv[params[i]] = args[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-67" title="67"&gt;        i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-68" title="68"&gt;      &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-69" title="69"&gt;      evaluate(mhd[&lt;span class="dv"&gt;2&lt;/span&gt;], genv, new_lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-70" title="70"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-71" title="71"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;ary_new&amp;quot;&lt;/span&gt;, ary_values&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-72" title="72"&gt;    ary = []&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-73" title="73"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-74" title="74"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; ary_values[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-75" title="75"&gt;      ary [i] = evaluate(ary_values[i], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-76" title="76"&gt;      i = i + &lt;span class="dv"&gt;1&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-77" title="77"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-78" title="78"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;ary_ref&amp;quot;&lt;/span&gt;, ary_exp, idx_exp&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-79" title="79"&gt;    ary = evaluate(ary_exp, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-80" title="80"&gt;    idx = evaluate(idx_exp, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-81" title="81"&gt;    ary[idx]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-82" title="82"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;ary_assign&amp;quot;&lt;/span&gt;, ary_exp, idx_exp, value_exp&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-83" title="83"&gt;    ary = evaluate(ary_exp, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-84" title="84"&gt;    idx = evaluate(idx_exp, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-85" title="85"&gt;    val = evaluate(value_exp, genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-86" title="86"&gt;    ary[idx] = val&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-87" title="87"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt; &lt;span class="st"&gt;&amp;quot;hash_new&amp;quot;&lt;/span&gt;, *key_values&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-88" title="88"&gt;    hsh = {}&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-89" title="89"&gt;    i = &lt;span class="dv"&gt;0&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-90" title="90"&gt;    &lt;span class="kw"&gt;while&lt;/span&gt; key_values[i]&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-91" title="91"&gt;      key = evaluate(key_values[i], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-92" title="92"&gt;      val = evaluate(key_values[i + &lt;span class="dv"&gt;1&lt;/span&gt;], genv, lenv)&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-93" title="93"&gt;      hsh[key] = val&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-94" title="94"&gt;      i = i + &lt;span class="dv"&gt;2&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-95" title="95"&gt;    &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-96" title="96"&gt;    hsh&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-97" title="97"&gt;  &lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb5-98" title="98"&gt;&lt;span class="kw"&gt;end&lt;/span&gt;&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;配列にマッチさせる場合，&lt;code&gt;in [a, b, c]&lt;/code&gt; の &lt;code&gt;[]&lt;/code&gt; を省くことができる． また，&lt;code&gt;in &amp;quot;hoge&amp;quot;, *rest&lt;/code&gt; は配列の残りの要素全てを &lt;code&gt;*rest&lt;/code&gt; にマッチさせる構文だ． 他は特別な機能を使ってないのできっと読めるでしょう．&lt;/p&gt;
+&lt;h2 id="おまけ-minruby-パターンマッチング"&gt;おまけ: minruby + パターンマッチング&lt;/h2&gt;
+&lt;p&gt;試しに &lt;code&gt;minruby&lt;/code&gt; もパターンマッチで書き換えてみた． 差分は&lt;a href="https://github.com/matsubara0507/minruby-gem/pull/1"&gt;これ&lt;/a&gt;． めちゃくちゃやっつけで作ったので穴があるかもしれない．&lt;/p&gt;
+&lt;p&gt;ここでは新しく Alternative Pattern を使っている． こういうのだ:&lt;/p&gt;
+&lt;div class="sourceCode" id="cb6"&gt;&lt;pre class="sourceCode ruby"&gt;&lt;code class="sourceCode ruby"&gt;&lt;a class="sourceLine" id="cb6-1" title="1"&gt;&lt;span class="co"&gt;# Alternative Pattern: hoge | fuga&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb6-2" title="2"&gt;&lt;span class="kw"&gt;in&lt;/span&gt; (&lt;span class="st"&gt;:program&lt;/span&gt; | &lt;span class="st"&gt;:bodystmt&lt;/span&gt;), exp1, *_&lt;/a&gt;
+&lt;a class="sourceLine" id="cb6-3" title="3"&gt;    make_stmts(exp1)&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Alternative Pattern には注意点があって，このパターンでは変数へのマッチを利用することができない:&lt;/p&gt;
+&lt;div class="sourceCode" id="cb7"&gt;&lt;pre class="sourceCode ruby"&gt;&lt;code class="sourceCode ruby"&gt;&lt;a class="sourceLine" id="cb7-1" title="1"&gt;&lt;span class="co"&gt;# Error: illegal variable in alternative pattern&lt;/span&gt;&lt;/a&gt;
+&lt;a class="sourceLine" id="cb7-2" title="2"&gt;&lt;span class="kw"&gt;in&lt;/span&gt; (&lt;span class="st"&gt;:program&lt;/span&gt; exp1, *_ | &lt;span class="st"&gt;:bodystmt&lt;/span&gt; exp1, *_),&lt;/a&gt;
+&lt;a class="sourceLine" id="cb7-3" title="3"&gt;    make_stmts(exp1)&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;ここからは余談． MinRuby は &lt;code&gt;ruby interp.rb interp.rb fizzbuzz.rb&lt;/code&gt; のように自身を自身で評価することが可能だ(そのため &lt;code&gt;map&lt;/code&gt; や &lt;code&gt;foreach&lt;/code&gt; などを使わずに少し冗長なコードになっている)． しかし，パターンマッチングを導入しちゃうとこれができない． なんとかできないかなぁと思って &lt;code&gt;minruby&lt;/code&gt; をパターンマッチングで書き換えてみたけど，まぁ無理でした． いいアイデアあったら教えて．&lt;/p&gt;
+&lt;h2 id="おしまい"&gt;おしまい&lt;/h2&gt;
+&lt;p&gt;次は型検査も試したいですね．&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/article&gt;
+</summary></entry><entry><id>https://matsubara0507.github.io/posts/2019-05-12-create-my-github-cards.html</id><title type="text">GitHub Card を生成する SPA を Elm で作った</title><updated>2019-05-12T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2019-05-12-create-my-github-cards.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
  &lt;div class="card-content"&gt;
   &lt;header class="post-header"&gt;
     &lt;h1 class="post-title" itemprop="name headline"&gt;GitHub Card を生成する SPA を Elm で作った&lt;/h1&gt;
@@ -2352,205 +2646,7 @@ less, lv, manコマンド終了時に画面をクリアしない
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;/article&gt;
-</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/12/06/195433</id><title type="text">Kubernetes 1.13: SIG Scheduling の変更内容</title><updated>2018-12-06T19:54:33+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/12/06/195433"/><summary type="html">はじめに 本記事では、Kubernetes 1.13 の CHANGELOG からスケジューリングに関する内容をまとめました。 主な変更点 https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.13.md#sig-scheduling 1.13 における SIG Scheduling の取り組みは主に安定性に焦点を当てており、いくつかの大きな機能の導入は次のバージョンまで延期することになりました。特記すべき変更として次に挙げる 2 点があります。 #69824: Taint based Eviction の有効化 Ta…</summary></entry><entry><id>https://matsubara0507.github.io/posts/2018-12-05-create-dhall-ex.html</id><title type="text">Dhall を試して物足りない部分を補うツールを自作した</title><updated>2018-12-05T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2018-12-05-create-dhall-ex.html"/><summary type="html">&lt;article class="post card" itemscope itemtype="http://schema.org/BlogPosting"&gt;
- &lt;div class="card-content"&gt;
-  &lt;header class="post-header"&gt;
-    &lt;h1 class="post-title" itemprop="name headline"&gt;Dhall を試して物足りない部分を補うツールを自作した&lt;/h1&gt;
-    &lt;p class="post-meta"&gt;
-      &lt;time datetime="2018-12-05" itemprop="datePublished"&gt;
-        Dec 5, 2018
-      &lt;/time&gt;
-      
-      
-      &lt;div class="tags"&gt;
-          &lt;i class="fa fa-tags"&gt;&lt;/i&gt; &lt;a href="/tags/Haskell.html"&gt;Haskell&lt;/a&gt; &lt;a href="/tags/Dhall.html"&gt;Dhall&lt;/a&gt;
-      &lt;/div&gt;
-      
-    &lt;/p&gt;
-  &lt;/header&gt;
-
-  &lt;div class="post-content" itemprop="articleBody"&gt;
-    &lt;p&gt;本稿は &lt;a href="https://qiita.com/advent-calendar/2018/haskell"&gt;Haskell Advent Calendar 2018&lt;/a&gt; 5日目の記事です．&lt;/p&gt;
-&lt;p&gt;Haskell Day 2018 の発表をきっかけに，兼ねてから気になっていた Dhall を試した． いくつかツールが欲しくなったので作りましたっていう話です．&lt;/p&gt;
-&lt;p&gt;作ったものはこれ:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/matsubara0507/yaml-to-dhall"&gt;matsubara0507/yaml-to-dhall - GitHub&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://github.com/matsubara0507/dhall-ex"&gt;matsubara0507/dhall-ex - GitHub&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;ちなみに，今回作ったツールは現状の stack の stable resolver にある v1.5.1 を利用している．&lt;/p&gt;
-&lt;h2 id="dhall"&gt;Dhall&lt;/h2&gt;
-&lt;p&gt;&lt;a href="https://github.com/dhall-lang/dhall-lang"&gt;Dhall&lt;/a&gt; は静的型付けされた設定記述言語である． 多くの場合，プログラミング言語やアプリケーションに使われる設定ファイルには JSON や YAML が利用されている． プログラミング言語のビルドシステムのような設定ファイル一つ程度なら問題ないが，Kubernetes や Ansible のような膨大な設定ファイルが依存しあう場合，静的型付けプログラミング言語のようにコンパイルによる型検査を導入したくなるだろう． Dhall はそのための言語であり，また便利な関数が用意されているため，非常に再利用性の高い設定ファイルを記述できる．&lt;/p&gt;
-&lt;h3 id="例"&gt;例:&lt;/h3&gt;
-&lt;p&gt;Dhall は静的片付け言語なので，まずは型を定義しよう:&lt;/p&gt;
-&lt;div class="sourceCode" id="cb1"&gt;&lt;pre class="sourceCode ocaml"&gt;&lt;code class="sourceCode ocaml"&gt;&lt;a class="sourceLine" id="cb1-1" title="1"&gt;$ cat ./User.dhall&lt;/a&gt;
-&lt;a class="sourceLine" id="cb1-2" title="2"&gt;{ homeDirectory : Text, privateKeyFile : Text, publicKeyFile : Text }&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;このユーザ型の値はユーザ名から一意に生成されることは容易に想像できるだろう:&lt;/p&gt;
-&lt;div class="sourceCode" id="cb2"&gt;&lt;pre class="sourceCode ocaml"&gt;&lt;code class="sourceCode ocaml"&gt;&lt;a class="sourceLine" id="cb2-1" title="1"&gt;$ cat ./makeUser.dhall&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-2" title="2"&gt;  \(user_name : Text)&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-3" title="3"&gt;-&amp;gt;    &lt;span class="kw"&gt;let&lt;/span&gt; homeDirectory = &lt;span class="st"&gt;&amp;quot;/home/${user_name}&amp;quot;&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-4" title="4"&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-5" title="5"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt;  &lt;span class="kw"&gt;let&lt;/span&gt; privateKeyFile = &lt;span class="st"&gt;&amp;quot;${homeDirectory}/id_rsa&amp;quot;&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-6" title="6"&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-7" title="7"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt;  &lt;span class="kw"&gt;let&lt;/span&gt; publicKeyFile = &lt;span class="st"&gt;&amp;quot;${privateKeyFile}.pub&amp;quot;&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-8" title="8"&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-9" title="9"&gt;  &lt;span class="kw"&gt;in&lt;/span&gt;    { homeDirectory =&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-10" title="10"&gt;            homeDirectory&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-11" title="11"&gt;        , privateKeyFile =&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-12" title="12"&gt;            privateKeyFile&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-13" title="13"&gt;        , publicKeyFile =&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-14" title="14"&gt;            publicKeyFile&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-15" title="15"&gt;        }&lt;/a&gt;
-&lt;a class="sourceLine" id="cb2-16" title="16"&gt;      : ./User.dhall&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;この &lt;code&gt;./makeUser.dhall&lt;/code&gt; は任意の文字列を与えると，それをユーザ名として &lt;code&gt;./User.dhall&lt;/code&gt; 型の値を生成してくれる． さらに，高階関数を使って複数のユーザに対し一気に適用してみよう．&lt;/p&gt;
-&lt;pre class="dhall"&gt;&lt;code&gt;$ cat ./users.dhall
-let User = ./User.dhall
-
-in  let map =
-      https://raw.githubusercontent.com/dhall-lang/dhall-lang/0a7f596d03b3ea760a96a8e03935f4baa64274e1/Prelude/List/map
-
-in  map Text User ./makeUser.dhall [ &amp;quot;alice&amp;quot;, &amp;quot;bob&amp;quot;, &amp;quot;curry&amp;quot; ] : List User&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;map&lt;/code&gt; には &lt;a href="https://github.com/dhall-lang/dhall-lang/blob/master/Prelude/List/map"&gt;dhall のリポジトリにある標準パッケージの関数&lt;/a&gt;を直接インポートしている． &lt;code&gt;map&lt;/code&gt; の型は &lt;code&gt;∀(a : Type) → ∀(b : Type) → (a → b) → List a → List b&lt;/code&gt; となっている． 基本的に Dhall で多相な高階関数を利用するときは，引数から直接型を与えてあげる必要がある．&lt;/p&gt;
-&lt;p&gt;さて，これを dhall でビルドすると次のような結果を得る:&lt;/p&gt;
-&lt;pre class="dhall"&gt;&lt;code&gt;$ dhall &amp;lt;&amp;lt;&amp;lt; ./users.dhall
-[ { homeDirectory =
-      &amp;quot;/home/alice&amp;quot;
-  , privateKeyFile =
-      &amp;quot;/home/alice/id_rsa&amp;quot;
-  , publicKeyFile =
-      &amp;quot;/home/alice/id_rsa.pub&amp;quot;
-  }
-, { homeDirectory =
-      &amp;quot;/home/bob&amp;quot;
-  , privateKeyFile =
-      &amp;quot;/home/bob/id_rsa&amp;quot;
-  , publicKeyFile =
-      &amp;quot;/home/bob/id_rsa.pub&amp;quot;
-  }
-, { homeDirectory =
-      &amp;quot;/home/curry&amp;quot;
-  , privateKeyFile =
-      &amp;quot;/home/curry/id_rsa&amp;quot;
-  , publicKeyFile =
-      &amp;quot;/home/curry/id_rsa.pub&amp;quot;
-  }
-]&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;これは次のようなYAMLに対応し，&lt;code&gt;dhall-to-yaml&lt;/code&gt; などのツールで変換可能だ:&lt;/p&gt;
-&lt;div class="sourceCode" id="cb5"&gt;&lt;pre class="sourceCode yaml"&gt;&lt;code class="sourceCode yaml"&gt;&lt;a class="sourceLine" id="cb5-1" title="1"&gt;&lt;span class="kw"&gt;-&lt;/span&gt; &lt;span class="fu"&gt;privateKeyFile:&lt;/span&gt;&lt;span class="at"&gt; /home/alice/id_rsa&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-2" title="2"&gt;  &lt;span class="fu"&gt;publicKeyFile:&lt;/span&gt;&lt;span class="at"&gt; /home/alice/id_rsa.pub&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-3" title="3"&gt;  &lt;span class="fu"&gt;homeDirectory:&lt;/span&gt;&lt;span class="at"&gt; /home/alice&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-4" title="4"&gt;&lt;span class="kw"&gt;-&lt;/span&gt; &lt;span class="fu"&gt;privateKeyFile:&lt;/span&gt;&lt;span class="at"&gt; /home/bob/id_rsa&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-5" title="5"&gt;  &lt;span class="fu"&gt;publicKeyFile:&lt;/span&gt;&lt;span class="at"&gt; /home/bob/id_rsa.pub&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-6" title="6"&gt;  &lt;span class="fu"&gt;homeDirectory:&lt;/span&gt;&lt;span class="at"&gt; /home/bob&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-7" title="7"&gt;&lt;span class="kw"&gt;-&lt;/span&gt; &lt;span class="fu"&gt;privateKeyFile:&lt;/span&gt;&lt;span class="at"&gt; /home/curry/id_rsa&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-8" title="8"&gt;  &lt;span class="fu"&gt;publicKeyFile:&lt;/span&gt;&lt;span class="at"&gt; /home/curry/id_rsa.pub&lt;/span&gt;&lt;/a&gt;
-&lt;a class="sourceLine" id="cb5-9" title="9"&gt;  &lt;span class="fu"&gt;homeDirectory:&lt;/span&gt;&lt;span class="at"&gt; /home/curry&lt;/span&gt;&lt;/a&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2 id="section"&gt;&lt;/h2&gt;
-&lt;p&gt;また，ざっくりとしたイメージを得るには、先日あった &lt;a href="https://wiki.haskell.jp/Workshop/HaskellDay/2018"&gt;Haskell Day 2018&lt;/a&gt; での&lt;a href="https://speakerdeck.com/syocy/dhall-haskellfalsexin-tanakiraapuri"&gt;発表資料&lt;/a&gt;がわかりやすくてオススメ．&lt;/p&gt;
-&lt;h3 id="使ってみて思うところ"&gt;使ってみて思うところ&lt;/h3&gt;
-&lt;p&gt;もしかしたら最新のバージョンであれば改善しているものもあるかもしれない．&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;基本的な高階関数があり便利
-&lt;ul&gt;
-&lt;li&gt;map,fold,filter など&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;普通のプログラミングのように式を再利用できる&lt;/li&gt;
-&lt;li&gt;型推論がザコい
-&lt;ul&gt;
-&lt;li&gt;パラメトリック多相を挟むとダメみたいですね&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;結構ビルドエラーがエスパー
-&lt;ul&gt;
-&lt;li&gt;慣れの問題か？&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;YAML のいわゆる連想配列への変換ができない&lt;/li&gt;
-&lt;li&gt;日本語が化ける ;;
-&lt;ul&gt;
-&lt;li&gt;まぁ原因はわかるので最新でも治ってなかったらPRしてみるか&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="何に導入したか"&gt;何に導入したか&lt;/h2&gt;
-&lt;p&gt;弊社が企画してる学生向けの競技型イベントに関するシステムの設定ファイルを Dhall に置き換えてみた． そのシステムは，インフラ・スコアボード・デプロイツールの3つのリポジトリに別れており，ところどころ重複した設定が3つのリポジトリに存在する． そこで，設定用のリポジトリを作って，そこに Dhall で記述した設定を置き，そこから各リポジトリに設定を撒くような仕組みを考えることにした．&lt;/p&gt;
-&lt;p&gt;&lt;img src="/assets/create-dhall-ex/system-with-dhall.png" /&gt;&lt;/p&gt;
-&lt;p&gt;別に Dhall にしたからといって劇的に何かがよくなるわけでは無いのだが，ちょうど良いサンドボックスがあったのでイロイロと試してみる，というのが本音です（笑）&lt;/p&gt;
-&lt;h2 id="yaml-to-dhall"&gt;yaml-to-dhall&lt;/h2&gt;
-&lt;p&gt;最初の方はせっせと手作業で変換していたが，何個かやって変換の仕方の勘所がわかって来た． そうなると後は作業でしか無いので，なんとかして大量にある設定ファイルを一括変換したい．&lt;/p&gt;
-&lt;p&gt;調べた限り，YAML から Dhall に変換するプログラムは無さそう(逆はもちろんあるけど)． なのですっごい雑なものを作った．&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://github.com/matsubara0507/yaml-to-dhall"&gt;matsubara0507/yaml-to-dhall - GitHub&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;これは極めて単純なことしかできない． 数値は全て Float に変換されるし，Optional や空リストの書き方が間違っている． とりあえず変換して，手元のエディタで置換すればいいかなと思ったので雑なままである．&lt;/p&gt;
-&lt;p&gt;時間ができたらそのうち直すかも．&lt;/p&gt;
-&lt;h2 id="dhall-ex"&gt;dhall-ex&lt;/h2&gt;
-&lt;p&gt;前述した通り，一組の設定ファイル群から複数のリポジトリの設定ファイルを生成したかったのでその仕組みを作った． dhall-ex は次のような設定ファイルを記述する:&lt;/p&gt;
-&lt;pre class="dhall"&gt;&lt;code&gt;{ GH_TOKEN =
-      [ &amp;quot;matsubara0507:XXXX&amp;quot; ] : Optional Text
-  , root =
-      &amp;quot;configs&amp;quot;
-  , exports =
-      [ { name =
-            &amp;quot;deploy-tool&amp;quot;
-        , repo =
-            [ &amp;quot;git-challenge/deploy-tool&amp;quot; ] : Optional Text
-        , paths =
-            [ &amp;quot;settings/orgs/orgs.yml&amp;quot;
-            , &amp;quot;settings/orgs/review.yml&amp;quot;
-            ...
-            ]
-        }
-      ...
-      ]
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;別にどっちでもよかったのだが，せっかくなので dhall-ex の設定ファイルも Dhall で記述するようにした． なので，具体例より&lt;a href="https://github.com/matsubara0507/dhall-ex/blob/master/dhall/dhall-ex-type.dhall"&gt;型&lt;/a&gt;を見た方が早いだろう．&lt;/p&gt;
-&lt;pre class="dhall"&gt;&lt;code&gt;let Export = { name : Text, repo : Optional Text, paths : List Text }
-in  { GH_TOKEN : Optional Text, root : Text, exports : List Export }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;root&lt;/code&gt; は設定ファイル群を置くパスで，&lt;code&gt;exports&lt;/code&gt; が設定ファイル群の更新先のリポジトリなどの情報だ． &lt;code&gt;repo&lt;/code&gt; で GitHub リポジトリを指定し，&lt;code&gt;paths&lt;/code&gt; で関連する設定ファイルを列挙する． 例の場合 &lt;code&gt;./config/settings/orgs/orgs.yml.dhall&lt;/code&gt; を &lt;code&gt;./.dhall-ex/git-challenge/deploy-tool/settings/orgs/orgs.yml&lt;/code&gt; に dhall でビルドする．&lt;/p&gt;
-&lt;p&gt;ちなみに Dhall のバージョンが古いので &lt;code&gt;Optional&lt;/code&gt; がリストのリテラルを利用しているが，最新の Dhall には &lt;code&gt;Some&lt;/code&gt; と &lt;code&gt;None&lt;/code&gt; があるはず．&lt;/p&gt;
-&lt;h3 id="機能"&gt;機能&lt;/h3&gt;
-&lt;p&gt;現状はこんな感じ:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;$ dhall-ex --help
-dhall-ex - cli tool to support dhall
-
-Usage: dhall-ex [-v|--verbose] [-c|--config PATH] [--only NAME] COMMAND
-                [--version]
-
-Available options:
-  -v,--verbose             Enable verbose mode: verbosity level &amp;quot;debug&amp;quot;
-  -c,--config PATH         Configuration file
-  --only NAME              Exec subcommand only NAME in config
-  --version                Show version
-  -h,--help                Show this help text
-
-Available commands:
-  sort                     Sort record keys in dhall file
-  echo                     Echo TEXT
-  init                     Init dhall-ex work directory
-  build                    Build Dhall file to YAML or JSON
-  deploy                   Deploy builded config file to remote repository
-  checkout                 Checkout repository in dhall workspace
-  pull                     Pull repository in dhall workspace&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;echo&lt;/code&gt; は設定が正しく読み取れるかどうかにだけ使う雑機能． &lt;code&gt;sort&lt;/code&gt; レコードのフィールドの順番を型に合わせて並び替えてくれるコマンドだ． 前述した &lt;code&gt;yaml-to-dhall&lt;/code&gt; などを使った後に使った(並び変える必要はないんだけど，なんか読みやすいように)．&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;init&lt;/code&gt; でリポジトリなどの初期化をし，&lt;code&gt;build&lt;/code&gt; で設定ファイルを変換し，&lt;code&gt;deploy&lt;/code&gt; でコミットとプッシュを行ってくれる． &lt;code&gt;checkout&lt;/code&gt; や &lt;code&gt;pull&lt;/code&gt; はただの git コマンドのラッパーだ．&lt;/p&gt;
-&lt;p&gt;また，&lt;code&gt;--only deploy-tool&lt;/code&gt; などとすることでコマンドの実行を特定のリポジトリに限定できる．&lt;/p&gt;
-&lt;h3 id="実装"&gt;実装&lt;/h3&gt;
-&lt;p&gt;実は内部実装はそこまで難しいことをしていない． Dhall のファイルを読み込み，ビルドし，それを dhall-ex の設定ファイルに則って出力するだけだ． &lt;code&gt;build&lt;/code&gt; 以外のコマンドは &lt;a href="http://hackage.haskell.org/package/shelly"&gt;&lt;code&gt;shelly&lt;/code&gt;&lt;/a&gt; を使ってシェルスクリプトもどきを実行している．&lt;/p&gt;
-&lt;h3 id="todo"&gt;ToDo&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;例外処理が雑なのを直す
-&lt;ul&gt;
-&lt;li&gt;だいたいこの部分が残る（笑）&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;任意のコマンドを各リポジトリのワークスペースで実行できるようにする
-&lt;ul&gt;
-&lt;li&gt;なんか &lt;code&gt;git status&lt;/code&gt; とか &lt;code&gt;git branch&lt;/code&gt; とかしたい&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;並行処理&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id="おしまい"&gt;おしまい&lt;/h1&gt;
-&lt;p&gt;随分雑な記事になってしまった．&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;/article&gt;
-</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/11/26/191201</id><title type="text">今日は "GO GLOBAL" meetup #1 の日です</title><updated>2018-11-26T21:20:41+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/11/26/191201"/><summary type="html">"GO GLOBAL" meetup #1 に参加していますので、自分用のメモを残しておきます。 コーディング試験Codility運用の実態と実績 / @k0000i さん コーディング試験とは : コンピュータサイエンスの理解度を見る amazon, Intel, EA など 多数の言語に対応。VBとか 応募すると、コーディング試験を受けるようメールが来る 2時間で2問を回答する IDEは使用可能 デモテストや練習問題がある 受けておくとスコアを上げられるでしょう 正確性とパフォーマンスのスコアの平均 正確性 : バグがないか パフォーマンススコア : 大きいデータを突っ込んだ場合 コードテ…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/11/24/232705</id><title type="text">We Are JavaScripters! @26th で Elm と Firebase の連携について話してきました</title><updated>2018-11-24T23:27:05+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/11/24/232705"/><summary type="html">先日行われた We Are JavaScripters! @19th で Elm と JavaScript ライブラリの連携について発表してきました。 Elm の初心者向けの解説としてよく Msg, Model, update からなるアーキテクチャが挙げられていますが、今回の発表ではもう一歩だけ進んで、Cmd と Sub を使って Elm から JavaScript のライブラリを呼ぶ方法について解説しました。 サーバとしての JS ライブラリ 他の AltJS では JavaScript を呼び出す際、ソースコードの内部に埋め込む形になるのが普通です。 例えば Haskell を Java…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/11/19/Windows_%E3%81%A7_Haskell_iconv_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B</id><title type="text">Windows で Haskell iconv をビルドする</title><updated>2018-11-19T19:13:49+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/11/19/Windows_%E3%81%A7_Haskell_iconv_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"/><summary type="html">GHC 8.0 以前についてはこちらを参考に。 teratail.com GHC 8.2 以降で stack を使う場合をここではとりあげる。 確信はないのだが、GHC 8.2 から GHC 自体が iconv に依存しなくなったのか、$(stack path --programs)\ghc-8.0.2\mingw\lib から libiconv.a と libiconv.dll.a がなくなっているため GHC 8.0 以前のようにビルドができなくなっている。 なので、まず libiconv を取得する。 stack exec -- pacman -S libiconv-devel インスト…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3</id><title type="text">Leica M3</title><updated>2018-11-15T10:47:47+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3"/><summary type="html">Lomography Konstruktor F・Diana Mini から始まったフィルムカメラ熱ですが一瞬で行くところまで行ってしまった感じです。 Leica M3。 現在まで続く M 型 Leica の始祖を買ってしまいました。1962年製の56歳です。 （この写真を撮ったレンズも Asahi Super Takumar 55mm F1.8 なので60年代のレンズです。） Leica 意識前 初めはフィルムカメラの入門機としていくつかの記事に紹介されていた Asahi Pentax SP か Olympus OM-1（M-1）かと考えて中古カメラ屋めぐりをしていました。 このころはひたす…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/11/10/101541</id><title type="text">今日は Haskell Day 2018 の日です</title><updated>2018-11-10T18:01:57+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/11/10/101541"/><summary type="html">Haskell Day 2018 に来ましたので、自分用のメモを残しておきます。タグは #HaskellDay です。 作りながら学ぶHaskell入門 / @igrep さん 会場、懇親会のスポンサーは IIJ 様 (ありがとうございます！) mmlh コマンドで各自進める 課題の自動添削、たまにヒントを出してくれる わからなかったらメンターへ聞く Haskellを導入した話とHRRの紹介 / @khibinoさん 2008年 PerlからJavaを呼び出していた メンテナがいない、型検査がない Java, UNIXとの親和性があまりない 検討 =&gt; Common Lisp, OCaml, …</summary></entry><entry><id>http://fumieval.hatenablog.com/entry/2018/10/31/150056</id><title type="text">「名前の束縛」という名の束縛</title><updated>2018-10-31T18:20:45+09:00</updated><author><name>Fumiaki Kinoshita</name></author><link href="http://fumieval.hatenablog.com/entry/2018/10/31/150056"/><summary type="html">実用的なプログラミングにおいて、名前と概念を結びつける「束縛」はほぼ必須の概念である。しかし、その言葉には大きな誤解と混乱が根付いていた。 事の発端となったのは「Haskellにおいては、変数は値を代入するものではなく、値に束縛するものである」という議論である*1 *2。しかし、これは大きな誤解を孕んでいる。言葉の定義に立ち返ってその誤解を解いていこう。 束縛とバインディング 実は「束縛」には二つの意味がある。一つは、数学的な意味での変数の束縛*3、もう一つは、識別子と実体の結合という意味での束縛*4だ。 前者は変数の導入と言い換えることもできる。ラムダ計算におけるラムダ抽象と変数の関係もこれ…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/05/17/180426</id><title type="text">Kubernetes Meetup Tokyo #10 で Pod の Preemption について話してきました</title><updated>2018-10-23T16:31:12+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/05/17/180426"/><summary type="html">だいぶ日が空いてしまって今更ですが、先日行われた Kubernetes Meetup Tokyo #10 で、v1.8*1 から導入された新機能 Preemption について発表してきました。 Preemption は、Kubernetes クラスタのリソースが不足した際に、優先度が低い Pod を追い出して優先度が高い Pod の稼働を保証する仕組みです。 当日は時間が不足気味だったので、説明不十分だったかなと思われる点についていくつか補足しておきます。 Priority の指定について スライド中では詳しく説明しませんでしたが、ユーザは直接 Pod（や Deployment 中の Pod…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2018/10/15/100000</id><title type="text">Mackerelのグラフを端末で描画するコマンドmkrgを作りました</title><updated>2018-10-17T23:52:07+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2018/10/15/100000"/><summary type="html">Mackerelのグラフを端末で見れたらいいなと思ったので作ってみました。 github.com 使い方 $ go get -u github.com/itchyny/mkrg/cmd/mkrg $ mkrg コマンドを叩くと、そのホストのメトリックを取ってきてグラフを表示します。 何も考えずにコマンドを叩けば、システムメトリックのグラフを表示してくれます。 私はiTerm2を使っているので、とりあえずiTerm2では画像を表示できるようにしています。それ以外の端末では点字を使って頑張って表示します。 Mackerel サーバ監視[実践]入門作者: 井上大輔,粕谷大輔,杉山広通,田中慎司,坪内…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/10/02/203205</id><title type="text">猫でもわかる Vertical Pod Autoscaler</title><updated>2018-10-02T20:32:05+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/10/02/203205"/><summary type="html">先日行われた Kubernetes Meetup Tokyo #13 で、Vertical Pod Autoscaler (VPA) について発表してきました。 VPA は、各コンテナの Resource Request の値を自動的に調整してくれるコンポーネント群です。必要とするリソース（CPU、メモリ）量があらかじめ推測しにくいアプリケーションに対して、実績に基づいてそれらしい値を決めたい場合に効果を発揮します。 本記事ではスライドの補足として、VPA が動作する流れをクラスタ上での実際の挙動を通じて確認し、また内部実装についても踏み込んで解説します。 なお、本記事中で引用している仕様やソ…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/09/26/191231</id><title type="text">elm/time の使い方</title><updated>2018-09-26T19:12:31+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/09/26/191231"/><summary type="html">はじめに 先日、Elm v0.19 がリリースされました。公式ライブラリのリポジトリが elm-lang から elm に変更され、その中身も大きく再構成されています。 本記事では、これらの変更のうち特に時刻や日付の扱いに関する部分について、新しい API の使い方を含めて簡単に解説します。 v0.18 における時刻の扱い v0.18 では、時刻を扱う機能は標準パッケージ elm-lang/core の中で提供されていました。時刻を扱う Time モジュールと日付を扱う Date モジュールで、それぞれデータ型や関数が定義されているのが特徴です。 なお、旧バージョンのライブラリは現在 Elm …</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/15/113101</id><title type="text">inline-java パッケージを WSL へインストール</title><updated>2018-09-15T11:31:01+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/15/113101"/><summary type="html">ハマってガチャガチャしたので間違いあるかもしれないけどメモ。 まずjavaをインストール。入れるのは default-jdk のほうがいい気もする。 $ sudo apt install openjdk-9-jre-headless $ sudo apt install openjdk-9-jdk-headless jvm パッケージを入れるのに必要と思われる環境変数。 $ export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64 $ export LD_LIBRARY_PATH=/usr/lib/jvm/java-9-openjdk-amd64/l…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/14/195301</id><title type="text">今日は Roppongi.pm #1 の日です</title><updated>2018-09-14T21:20:56+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/14/195301"/><summary type="html">六本木.pm に来ていますので、適当にメモします。 オープニング 吉祥寺.pm + Okinawa.pm = 六本木.pm 六本木で Okinawa.pm やればいいや 飲食自由、フリードリンク ハッシュタグは #roppongipm ラクダがピンクだった頃の思い出 / @yoshiyuki_kondo さん Cプログラマのためのアルゴリズムとデータ構造、 Javaプログラマのためのアルゴリズムとデータ構造、yaccによるCコンパイラプログラミング なども書いてます Perl4の時代はラクダ本もリャマ本もピンク 訳本には Larry Wall のサインが入っている 1994年の 5.0 で青い…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/konstruktor-f</id><title type="text">プラモデルカメラ Lomography Konstruktor F</title><updated>2018-09-13T16:25:09+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/konstruktor-f"/><summary type="html">本来はフジヤカメラに行くことが目的だった。 「カメラバカにつける薬 in デジカメ Watch」でも取り上げられてて、その前から気になってたのもあって中野に行った。 特に買うつもりもなかったので雰囲気だけ知れればいいやというようにそそくさと出たのだが、ジャンク館が中野ブロードウェイにあるということで行ってみた。 そういえば中野ブロードウェイも気になってたんだし一石二鳥だった。 するとコイデカメラがあった。Lomography Konstruktor F があった。 動くしくみを理解しながら自分で組み立てるのが好きでカメラも好きな自分が惹かれるのは当然という感じだった。 そのときは散財する予定は…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/04/27/%E6%8A%80%E8%A1%93%E6%9B%B8%E5%85%B8_4_%E3%81%AB%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%9F</id><title type="text">技術書典 4 にサークル参加した</title><updated>2018-09-12T13:03:31+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/04/27/%E6%8A%80%E8%A1%93%E6%9B%B8%E5%85%B8_4_%E3%81%AB%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%9F"/><summary type="html">4月22日に開催された『技術書典 4』にサークル参加してきました。 techbookfest.org 技術書典は1と2に個人で参加して3は会社として参加して今回の4は会社と個人と2サークルにかかわっていました。 超技術書典を抜くと皆勤です。 個人サークル 既刊として『遠回りして学ぶ Yesod 入門』を増刷し、新刊は『手続き Haskell』を持っていきました。 doujin.kakkun61.com doujin.kakkun61.com 数字 売り上げ部数は、どんぶり勘定ですが（特に Yesod 本のダウンロードカードが完全に記憶による）下記の通りとなりました。 Yesod 本 紙 + P…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/12/102822</id><title type="text">"アルゴリズムクイックリファレンス" のノート (2)</title><updated>2018-09-12T10:28:22+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/12/102822"/><summary type="html">p.4 の貪欲法。素朴なアルゴリズムよりこちらの実装のほうが楽に思える。 github.com 前回の遅いアルゴリズムとの速度比較。 variance introduced by outliers が大きくていいのかは気になる。貪欲法の方が 2,000 倍以上速いので、むしろ前回の slow の実装に問題がありそう。 $ stack exec bench-convexhulls -- --output=convexhull.html points generated fromList [Point 2.1377835882015472e-2 0.37675969687894406,Point …</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/08/163549</id><title type="text">"アルゴリズムクイックリファレンス" のノート</title><updated>2018-09-08T16:38:48+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/08/163549"/><summary type="html">p.3 の convex hull の素朴解。 https://github.com/hiratara/hs-nutshell-algorithm-examples/blob/master/src/Main.hs 正しいかわからないので、plotしておく(案の定バグってたので修正してある)。 道具は datahaskell に従った。具体的には、乱数に mwc-probability 、 plot に Chart-diagrams を利用。作ったsvgファイルをブラウザで見るために、 stack install wai-app-static して warp によってweb serverを立ち上…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/09/01/%E3%80%8EYesod_%E5%85%A5%E9%96%80%E3%80%8F%E5%95%86%E6%A5%AD%E8%AA%8C%E5%8C%96</id><title type="text">『Yesod 入門』商業誌化</title><updated>2018-09-01T08:26:27+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/09/01/%E3%80%8EYesod_%E5%85%A5%E9%96%80%E3%80%8F%E5%95%86%E6%A5%AD%E8%AA%8C%E5%8C%96"/><summary type="html">同人誌で発売していた『遠回りして学ぶ Yesod 入門』がこのたびインプレス R&amp;D より『Haskell で作る Web アプリケーション 遠回りして学ぶ Yesod 入門』として商業誌化されることになりました。 www.impressrd.jp 同人誌版からの変更点は主に、 日本語が読みやすくなった 対応バージョンが上がった 点です。章が増えたり減ったりはしていません。あと、表紙がかわいくなりました。かわいい。 商業誌では Amazon と honto にてオンデマンド印刷の紙の書籍も購入できるようになっています。紙はこれまで即売会でしか販売していなかったので初めて通信販売で買えるようにな…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/09/01/%E5%88%9D%E3%83%95%E3%82%A3%E3%83%AB%E3%83%A0</id><title type="text">初フィルム</title><updated>2018-09-01T07:50:07+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/09/01/%E5%88%9D%E3%83%95%E3%82%A3%E3%83%AB%E3%83%A0"/><summary type="html">厳密にいうと小学校の旅行などで「写ルンです」を使ったりしたことがあるので、初フィルムじゃないんだけど自分で装填するものとしては初ということで。 中野のコイデカメラで自分でプラモデルのように組み立てるカメラを見つけて「なんだこれは！？」と調べていたら Lomography にあてられてどうしても自分でも撮りたくなって中古の Lomography Diana Mini を買った。 それで2本撮ったので現像・スキャンしてもらってきた。（本当はもう1本もあったんだけどダメにした。） 70枚撮った中で奇跡的に手ぶれもなくピントも合っている1枚。 鏡筒の向かって左のレバーがシャッターボタンなんだけどこれが…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/08/30/085503</id><title type="text">"The Elements of Statistical Learning" のノート</title><updated>2018-08-30T08:55:03+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/08/30/085503"/><summary type="html">The Elements of Statistical Learning . chap. 2 supervised learning と unsupervised learning inputs predictors, independent variables, features とも言う outputs responses, dependent variables, targets とも言う quantitative qualitative : 有限集合で表現される classes, categorical, discrete, factors とも言う regression : quan…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/08/23/211858</id><title type="text">詳解！ Elm における Fuzzing</title><updated>2018-08-23T21:18:58+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/08/23/211858"/><summary type="html">先日行われた We Are JavaScripters! @23rd で、Elm のテストフレームワーク elm-test に搭載されている Fuzzing 機能について発表してきました。 Fuzzing を利用するとテストデータを自動で生成することができるため、例えば「encode と decode を行うと元に戻る」といった、入力に依存しない 関数の性質に関するテスト をより簡単かつ効率的に実装することができます。 さらに、後で詳しく解説する通り、elm-test の Fuzzer にはバグが起こりやすいエッジケースを集中的に生成してくれるというメリットもあります。 elm-test の使…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B</id><title type="text">Windows で haskell-ide-engine をビルドする</title><updated>2018-08-16T17:34:50+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"/><summary type="html">手順 1. ソースコード取得。 git clone git@github.com:haskell/haskell-ide-engine.git 2. Unicode を扱う ICU の古いバージョンが要るので取得。 自分の使うバージョンの text-icu の changelog を見て、必要な ICU のバージョンを探す。執筆時点では 53 だった。 http://site.icu-project.org/download/53#TOC-ICU4C-Download 任意の場所に展開する。以降、展開先の箇所を $icu と表記する。 $icu\bin64 にある dll の名前を変える。（要…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/08/01/055608</id><title type="text">July Tech Festa 2018 で分散システムの検証について話してきました / #JTF2018</title><updated>2018-08-01T13:56:39+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/08/01/055608"/><summary type="html">先日行われた July Tech Festa 2018 で、モデル検査を使った分散アルゴリズムの検証について発表してきました。 前半はオートマトンによるシステムの記述と検査の基礎について、後半は三種類のツール SPIN、TLA+、P による記述方法の紹介、といった内容です。 後半のソースコード紹介が散文的な感じになってしまって、いまいちメリットが伝わらない感じだったので、次回があればもっとエモいスライドにしようと思います。 分散アルゴリズムの形式化 定理証明による検証 今回の話の流れとして「分散システムにはモデル検査が有効」と述べていますが、必ずしも定理証明が分散システムの検証に向かないという…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE</id><title type="text">入社</title><updated>2018-08-01T00:00:56+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE"/><summary type="html">本日付けで IIJ に入社します。 職業 Haskeller になる……はず。</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7</id><title type="text">退職</title><updated>2018-07-31T22:30:05+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7"/><summary type="html">2013年に新卒で入社した KLab を今日付けで退職しました。</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/21/114826</id><title type="text">LTS-12.1でhpack-convertコンパイルできないんすよねー</title><updated>2018-07-21T11:48:26+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/21/114826"/><summary type="html">そんなこともあろうかと、forkして lts-12.1 ブランチ用意しておきましたので。 github.com まあ、ただの変換ツールなので、古いLTSでビルドしても構わない気はするけど、新しいマシンだと ghc インストールさせたりするのだるかったので。 ということで、手元のリポジトリももろもろ hpack に乗り換えようとしてるのだった。 https://github.com/hiratara/hs-server-starter/pull/4 https://github.com/hiratara/hs-reqcatcher/pull/2 https://github.com/hirata…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2018/07/14/195255</id><title type="text">Dhallによるリッチな設定ファイル体験</title><updated>2018-07-14T19:52:55+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2018/07/14/195255"/><summary type="html">(この記事のレギュレーション: lts-11.9) Dhall という設定記述用言語があり、使ってみたところ良い感じだったので紹介します。 なお、この記事は先日某所で発表したものの拡大版になります。 speakerdeck.com Dhallとは何か Dhallについて短かく表現するなら公式サイトの以下の説明が分かりやすいです。 You can think of Dhall as: JSON + functions + types + imports データ表現にプログラマブルさと静的な検査とファイルのインポートを加えたものというわけです。 まだ開発中のためかあまりアピールされていませんがツー…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/14/175016</id><title type="text">Haskell入門のサンプルコードのLTS-12.0対応 </title><updated>2018-07-14T17:50:16+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/14/175016"/><summary type="html">つい半年前に最新のLTSへ対応したばかりなのに、気がつくと LTS-12.0 が出て、 ghc-8.4 を Stack から使えるようになった。コミュニティが活発で、非常にありがたいことである。 ということで、 Haskell入門 のサンプルもLTS-12.0に対応させたブランチを用意した。と言っても、いくつか Stackge の管理下から外れてしまったパッケージが出てきたのを調整したくらいで、コードは何も変更していない。 github.com さらに素晴らしいことに、これらのコードはすべてWindows 10の最新の WSL 上で動くことを確認できた。macOS上で試すのと同様に、 Wind…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2017/11/17/090000</id><title type="text">zshの標準エラー出力の色を赤くする</title><updated>2018-06-29T14:22:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2017/11/17/090000"/><summary type="html">[追記]以下の方法は良くないようです。必ず、このエントリー最後の「stderredを使う」を参照してください[/追記] 最近stderrを赤くするように設定したら、コマンドの出力がかなり見やすくなりました。 設定はこんな感じに書いてます。 zmodload zsh/terminfo zsh/system color_stderr() { while sysread std_err_color; do syswrite -o 2 "${fg_bold[red]}${std_err_color}${terminfo[sgr0]}" done } exec 2&gt; &gt;(color_stderr) fg…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2016/12/04/120000</id><title type="text">珍しいSHA1ハッシュを追い求めて</title><updated>2018-06-29T08:55:02+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2016/12/04/120000"/><summary type="html">「SHA1ハッシュってあるだろう？」 放課後、いつものように情報処理室に行くと、高山先輩が嬉しそうな顔でそう言った。 「ええ、SHA1、ありますね」 「SHA1って何桁か覚えているかい？」 「えっと…」 一年下の後輩、岡村が口を開いた。 「50桁くらいはありましたっけ…？」 先輩はパソコンに向かって何かを打ちはじめた。 現在、情報部の部員は三人しかいない。部長の高山先輩と、二年の自分と、後輩の岡村だ。いや、正確に言うと、先輩の学年にはもう少しいたのだが、もうほとんど部室に来ることはなくなってしまった。無理もない、この季節になると先輩たちは受験勉強で忙しくなる。 「例えば、こういうふうに… 適当…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2018/06/25/130000</id><title type="text">はてな・ペパボ技術大会 #4 〜DevOps〜 @京都 で登壇しました</title><updated>2018-06-25T13:40:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2018/06/25/130000"/><summary type="html">先日 6/23 に技術イベント「はてな・ペパボ技術大会 #4 〜DevOps〜 @京都」で登壇・トークセッションに参加しました。 hatena.connpass.com 普段の業務でDevOpsという言葉を使うことはありません。 しかし、DevOpsのあり方を見直した結果が現状の体制や仕事のフローであったり、あるいはこれからやろうとしていることにつながっているのだと思います。 技術の進歩によりDockerやGraphQLといった、レイヤー間の共通言語が発達する中で、ソフトウェア間あるいはチーム間が疎結合になっていくことはよいです。 一方でそういう技術で解決できない場面も残っていくのだろうなと思…</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html</id><title type="text">[linux][cygwin] unzipコマンドで "error:  invalid compressed data to inflate" というエラーメッセージがでたら？</title><updated>2018-06-06T01:11:48.468+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html"/><summary type="text">zipアーカイブの中に長さが0のファイルが含まれていると、unzipコマンドでは以下のようなエラーメッセージが表示されて、解凍することができません。アーカイブが壊れていなくてもエラーになります。
+</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/12/06/195433</id><title type="text">Kubernetes 1.13: SIG Scheduling の変更内容</title><updated>2018-12-06T19:54:33+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/12/06/195433"/><summary type="html">はじめに 本記事では、Kubernetes 1.13 の CHANGELOG からスケジューリングに関する内容をまとめました。 主な変更点 https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG-1.13.md#sig-scheduling 1.13 における SIG Scheduling の取り組みは主に安定性に焦点を当てており、いくつかの大きな機能の導入は次のバージョンまで延期することになりました。特記すべき変更として次に挙げる 2 点があります。 #69824: Taint based Eviction の有効化 Ta…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/11/26/191201</id><title type="text">今日は "GO GLOBAL" meetup #1 の日です</title><updated>2018-11-26T21:20:41+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/11/26/191201"/><summary type="html">"GO GLOBAL" meetup #1 に参加していますので、自分用のメモを残しておきます。 コーディング試験Codility運用の実態と実績 / @k0000i さん コーディング試験とは : コンピュータサイエンスの理解度を見る amazon, Intel, EA など 多数の言語に対応。VBとか 応募すると、コーディング試験を受けるようメールが来る 2時間で2問を回答する IDEは使用可能 デモテストや練習問題がある 受けておくとスコアを上げられるでしょう 正確性とパフォーマンスのスコアの平均 正確性 : バグがないか パフォーマンススコア : 大きいデータを突っ込んだ場合 コードテ…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/11/24/232705</id><title type="text">We Are JavaScripters! @26th で Elm と Firebase の連携について話してきました</title><updated>2018-11-24T23:27:05+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/11/24/232705"/><summary type="html">先日行われた We Are JavaScripters! @19th で Elm と JavaScript ライブラリの連携について発表してきました。 Elm の初心者向けの解説としてよく Msg, Model, update からなるアーキテクチャが挙げられていますが、今回の発表ではもう一歩だけ進んで、Cmd と Sub を使って Elm から JavaScript のライブラリを呼ぶ方法について解説しました。 サーバとしての JS ライブラリ 他の AltJS では JavaScript を呼び出す際、ソースコードの内部に埋め込む形になるのが普通です。 例えば Haskell を Java…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/11/19/Windows_%E3%81%A7_Haskell_iconv_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B</id><title type="text">Windows で Haskell iconv をビルドする</title><updated>2018-11-19T19:13:49+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/11/19/Windows_%E3%81%A7_Haskell_iconv_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"/><summary type="html">GHC 8.0 以前についてはこちらを参考に。 teratail.com GHC 8.2 以降で stack を使う場合をここではとりあげる。 確信はないのだが、GHC 8.2 から GHC 自体が iconv に依存しなくなったのか、$(stack path --programs)\ghc-8.0.2\mingw\lib から libiconv.a と libiconv.dll.a がなくなっているため GHC 8.0 以前のようにビルドができなくなっている。 なので、まず libiconv を取得する。 stack exec -- pacman -S libiconv-devel インスト…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3</id><title type="text">Leica M3</title><updated>2018-11-15T10:47:47+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/09/30/Leica_M3"/><summary type="html">Lomography Konstruktor F・Diana Mini から始まったフィルムカメラ熱ですが一瞬で行くところまで行ってしまった感じです。 Leica M3。 現在まで続く M 型 Leica の始祖を買ってしまいました。1962年製の56歳です。 （この写真を撮ったレンズも Asahi Super Takumar 55mm F1.8 なので60年代のレンズです。） Leica 意識前 初めはフィルムカメラの入門機としていくつかの記事に紹介されていた Asahi Pentax SP か Olympus OM-1（M-1）かと考えて中古カメラ屋めぐりをしていました。 このころはひたす…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/11/10/101541</id><title type="text">今日は Haskell Day 2018 の日です</title><updated>2018-11-10T18:01:57+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/11/10/101541"/><summary type="html">Haskell Day 2018 に来ましたので、自分用のメモを残しておきます。タグは #HaskellDay です。 作りながら学ぶHaskell入門 / @igrep さん 会場、懇親会のスポンサーは IIJ 様 (ありがとうございます！) mmlh コマンドで各自進める 課題の自動添削、たまにヒントを出してくれる わからなかったらメンターへ聞く Haskellを導入した話とHRRの紹介 / @khibinoさん 2008年 PerlからJavaを呼び出していた メンテナがいない、型検査がない Java, UNIXとの親和性があまりない 検討 =&gt; Common Lisp, OCaml, …</summary></entry><entry><id>http://fumieval.hatenablog.com/entry/2018/10/31/150056</id><title type="text">「名前の束縛」という名の束縛</title><updated>2018-10-31T18:20:45+09:00</updated><author><name>Fumiaki Kinoshita</name></author><link href="http://fumieval.hatenablog.com/entry/2018/10/31/150056"/><summary type="html">実用的なプログラミングにおいて、名前と概念を結びつける「束縛」はほぼ必須の概念である。しかし、その言葉には大きな誤解と混乱が根付いていた。 事の発端となったのは「Haskellにおいては、変数は値を代入するものではなく、値に束縛するものである」という議論である*1 *2。しかし、これは大きな誤解を孕んでいる。言葉の定義に立ち返ってその誤解を解いていこう。 束縛とバインディング 実は「束縛」には二つの意味がある。一つは、数学的な意味での変数の束縛*3、もう一つは、識別子と実体の結合という意味での束縛*4だ。 前者は変数の導入と言い換えることもできる。ラムダ計算におけるラムダ抽象と変数の関係もこれ…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/05/17/180426</id><title type="text">Kubernetes Meetup Tokyo #10 で Pod の Preemption について話してきました</title><updated>2018-10-23T16:31:12+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/05/17/180426"/><summary type="html">だいぶ日が空いてしまって今更ですが、先日行われた Kubernetes Meetup Tokyo #10 で、v1.8*1 から導入された新機能 Preemption について発表してきました。 Preemption は、Kubernetes クラスタのリソースが不足した際に、優先度が低い Pod を追い出して優先度が高い Pod の稼働を保証する仕組みです。 当日は時間が不足気味だったので、説明不十分だったかなと思われる点についていくつか補足しておきます。 Priority の指定について スライド中では詳しく説明しませんでしたが、ユーザは直接 Pod（や Deployment 中の Pod…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2018/10/15/100000</id><title type="text">Mackerelのグラフを端末で描画するコマンドmkrgを作りました</title><updated>2018-10-17T23:52:07+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2018/10/15/100000"/><summary type="html">Mackerelのグラフを端末で見れたらいいなと思ったので作ってみました。 github.com 使い方 $ go get -u github.com/itchyny/mkrg/cmd/mkrg $ mkrg コマンドを叩くと、そのホストのメトリックを取ってきてグラフを表示します。 何も考えずにコマンドを叩けば、システムメトリックのグラフを表示してくれます。 私はiTerm2を使っているので、とりあえずiTerm2では画像を表示できるようにしています。それ以外の端末では点字を使って頑張って表示します。 Mackerel サーバ監視[実践]入門作者: 井上大輔,粕谷大輔,杉山広通,田中慎司,坪内…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/10/02/203205</id><title type="text">猫でもわかる Vertical Pod Autoscaler</title><updated>2018-10-02T20:32:05+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/10/02/203205"/><summary type="html">先日行われた Kubernetes Meetup Tokyo #13 で、Vertical Pod Autoscaler (VPA) について発表してきました。 VPA は、各コンテナの Resource Request の値を自動的に調整してくれるコンポーネント群です。必要とするリソース（CPU、メモリ）量があらかじめ推測しにくいアプリケーションに対して、実績に基づいてそれらしい値を決めたい場合に効果を発揮します。 本記事ではスライドの補足として、VPA が動作する流れをクラスタ上での実際の挙動を通じて確認し、また内部実装についても踏み込んで解説します。 なお、本記事中で引用している仕様やソ…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/09/26/191231</id><title type="text">elm/time の使い方</title><updated>2018-09-26T19:12:31+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/09/26/191231"/><summary type="html">はじめに 先日、Elm v0.19 がリリースされました。公式ライブラリのリポジトリが elm-lang から elm に変更され、その中身も大きく再構成されています。 本記事では、これらの変更のうち特に時刻や日付の扱いに関する部分について、新しい API の使い方を含めて簡単に解説します。 v0.18 における時刻の扱い v0.18 では、時刻を扱う機能は標準パッケージ elm-lang/core の中で提供されていました。時刻を扱う Time モジュールと日付を扱う Date モジュールで、それぞれデータ型や関数が定義されているのが特徴です。 なお、旧バージョンのライブラリは現在 Elm …</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/15/113101</id><title type="text">inline-java パッケージを WSL へインストール</title><updated>2018-09-15T11:31:01+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/15/113101"/><summary type="html">ハマってガチャガチャしたので間違いあるかもしれないけどメモ。 まずjavaをインストール。入れるのは default-jdk のほうがいい気もする。 $ sudo apt install openjdk-9-jre-headless $ sudo apt install openjdk-9-jdk-headless jvm パッケージを入れるのに必要と思われる環境変数。 $ export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64 $ export LD_LIBRARY_PATH=/usr/lib/jvm/java-9-openjdk-amd64/l…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/14/195301</id><title type="text">今日は Roppongi.pm #1 の日です</title><updated>2018-09-14T21:20:56+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/14/195301"/><summary type="html">六本木.pm に来ていますので、適当にメモします。 オープニング 吉祥寺.pm + Okinawa.pm = 六本木.pm 六本木で Okinawa.pm やればいいや 飲食自由、フリードリンク ハッシュタグは #roppongipm ラクダがピンクだった頃の思い出 / @yoshiyuki_kondo さん Cプログラマのためのアルゴリズムとデータ構造、 Javaプログラマのためのアルゴリズムとデータ構造、yaccによるCコンパイラプログラミング なども書いてます Perl4の時代はラクダ本もリャマ本もピンク 訳本には Larry Wall のサインが入っている 1994年の 5.0 で青い…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/konstruktor-f</id><title type="text">プラモデルカメラ Lomography Konstruktor F</title><updated>2018-09-13T16:25:09+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/konstruktor-f"/><summary type="html">本来はフジヤカメラに行くことが目的だった。 「カメラバカにつける薬 in デジカメ Watch」でも取り上げられてて、その前から気になってたのもあって中野に行った。 特に買うつもりもなかったので雰囲気だけ知れればいいやというようにそそくさと出たのだが、ジャンク館が中野ブロードウェイにあるということで行ってみた。 そういえば中野ブロードウェイも気になってたんだし一石二鳥だった。 するとコイデカメラがあった。Lomography Konstruktor F があった。 動くしくみを理解しながら自分で組み立てるのが好きでカメラも好きな自分が惹かれるのは当然という感じだった。 そのときは散財する予定は…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/04/27/%E6%8A%80%E8%A1%93%E6%9B%B8%E5%85%B8_4_%E3%81%AB%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%9F</id><title type="text">技術書典 4 にサークル参加した</title><updated>2018-09-12T13:03:31+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/04/27/%E6%8A%80%E8%A1%93%E6%9B%B8%E5%85%B8_4_%E3%81%AB%E3%82%B5%E3%83%BC%E3%82%AF%E3%83%AB%E5%8F%82%E5%8A%A0%E3%81%97%E3%81%9F"/><summary type="html">4月22日に開催された『技術書典 4』にサークル参加してきました。 techbookfest.org 技術書典は1と2に個人で参加して3は会社として参加して今回の4は会社と個人と2サークルにかかわっていました。 超技術書典を抜くと皆勤です。 個人サークル 既刊として『遠回りして学ぶ Yesod 入門』を増刷し、新刊は『手続き Haskell』を持っていきました。 doujin.kakkun61.com doujin.kakkun61.com 数字 売り上げ部数は、どんぶり勘定ですが（特に Yesod 本のダウンロードカードが完全に記憶による）下記の通りとなりました。 Yesod 本 紙 + P…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/12/102822</id><title type="text">"アルゴリズムクイックリファレンス" のノート (2)</title><updated>2018-09-12T10:28:22+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/12/102822"/><summary type="html">p.4 の貪欲法。素朴なアルゴリズムよりこちらの実装のほうが楽に思える。 github.com 前回の遅いアルゴリズムとの速度比較。 variance introduced by outliers が大きくていいのかは気になる。貪欲法の方が 2,000 倍以上速いので、むしろ前回の slow の実装に問題がありそう。 $ stack exec bench-convexhulls -- --output=convexhull.html points generated fromList [Point 2.1377835882015472e-2 0.37675969687894406,Point …</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/09/08/163549</id><title type="text">"アルゴリズムクイックリファレンス" のノート</title><updated>2018-09-08T16:38:48+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/09/08/163549"/><summary type="html">p.3 の convex hull の素朴解。 https://github.com/hiratara/hs-nutshell-algorithm-examples/blob/master/src/Main.hs 正しいかわからないので、plotしておく(案の定バグってたので修正してある)。 道具は datahaskell に従った。具体的には、乱数に mwc-probability 、 plot に Chart-diagrams を利用。作ったsvgファイルをブラウザで見るために、 stack install wai-app-static して warp によってweb serverを立ち上…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/09/01/%E3%80%8EYesod_%E5%85%A5%E9%96%80%E3%80%8F%E5%95%86%E6%A5%AD%E8%AA%8C%E5%8C%96</id><title type="text">『Yesod 入門』商業誌化</title><updated>2018-09-01T08:26:27+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/09/01/%E3%80%8EYesod_%E5%85%A5%E9%96%80%E3%80%8F%E5%95%86%E6%A5%AD%E8%AA%8C%E5%8C%96"/><summary type="html">同人誌で発売していた『遠回りして学ぶ Yesod 入門』がこのたびインプレス R&amp;D より『Haskell で作る Web アプリケーション 遠回りして学ぶ Yesod 入門』として商業誌化されることになりました。 www.impressrd.jp 同人誌版からの変更点は主に、 日本語が読みやすくなった 対応バージョンが上がった 点です。章が増えたり減ったりはしていません。あと、表紙がかわいくなりました。かわいい。 商業誌では Amazon と honto にてオンデマンド印刷の紙の書籍も購入できるようになっています。紙はこれまで即売会でしか販売していなかったので初めて通信販売で買えるようにな…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/09/01/%E5%88%9D%E3%83%95%E3%82%A3%E3%83%AB%E3%83%A0</id><title type="text">初フィルム</title><updated>2018-09-01T07:50:07+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/09/01/%E5%88%9D%E3%83%95%E3%82%A3%E3%83%AB%E3%83%A0"/><summary type="html">厳密にいうと小学校の旅行などで「写ルンです」を使ったりしたことがあるので、初フィルムじゃないんだけど自分で装填するものとしては初ということで。 中野のコイデカメラで自分でプラモデルのように組み立てるカメラを見つけて「なんだこれは！？」と調べていたら Lomography にあてられてどうしても自分でも撮りたくなって中古の Lomography Diana Mini を買った。 それで2本撮ったので現像・スキャンしてもらってきた。（本当はもう1本もあったんだけどダメにした。） 70枚撮った中で奇跡的に手ぶれもなくピントも合っている1枚。 鏡筒の向かって左のレバーがシャッターボタンなんだけどこれが…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/08/30/085503</id><title type="text">"The Elements of Statistical Learning" のノート</title><updated>2018-08-30T08:55:03+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/08/30/085503"/><summary type="html">The Elements of Statistical Learning . chap. 2 supervised learning と unsupervised learning inputs predictors, independent variables, features とも言う outputs responses, dependent variables, targets とも言う quantitative qualitative : 有限集合で表現される classes, categorical, discrete, factors とも言う regression : quan…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/08/23/211858</id><title type="text">詳解！ Elm における Fuzzing</title><updated>2018-08-23T21:18:58+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/08/23/211858"/><summary type="html">先日行われた We Are JavaScripters! @23rd で、Elm のテストフレームワーク elm-test に搭載されている Fuzzing 機能について発表してきました。 Fuzzing を利用するとテストデータを自動で生成することができるため、例えば「encode と decode を行うと元に戻る」といった、入力に依存しない 関数の性質に関するテスト をより簡単かつ効率的に実装することができます。 さらに、後で詳しく解説する通り、elm-test の Fuzzer にはバグが起こりやすいエッジケースを集中的に生成してくれるというメリットもあります。 elm-test の使…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B</id><title type="text">Windows で haskell-ide-engine をビルドする</title><updated>2018-08-16T17:34:50+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/08/16/Windows_%E3%81%A7_haskell-ide-engine_%E3%82%92%E3%83%93%E3%83%AB%E3%83%89%E3%81%99%E3%82%8B"/><summary type="html">手順 1. ソースコード取得。 git clone git@github.com:haskell/haskell-ide-engine.git 2. Unicode を扱う ICU の古いバージョンが要るので取得。 自分の使うバージョンの text-icu の changelog を見て、必要な ICU のバージョンを探す。執筆時点では 53 だった。 http://site.icu-project.org/download/53#TOC-ICU4C-Download 任意の場所に展開する。以降、展開先の箇所を $icu と表記する。 $icu\bin64 にある dll の名前を変える。（要…</summary></entry><entry><id>https://ccvanishing.hateblo.jp/entry/2018/08/01/055608</id><title type="text">July Tech Festa 2018 で分散システムの検証について話してきました / #JTF2018</title><updated>2018-08-01T13:56:39+09:00</updated><author><name>チェシャ猫</name></author><link href="https://ccvanishing.hateblo.jp/entry/2018/08/01/055608"/><summary type="html">先日行われた July Tech Festa 2018 で、モデル検査を使った分散アルゴリズムの検証について発表してきました。 前半はオートマトンによるシステムの記述と検査の基礎について、後半は三種類のツール SPIN、TLA+、P による記述方法の紹介、といった内容です。 後半のソースコード紹介が散文的な感じになってしまって、いまいちメリットが伝わらない感じだったので、次回があればもっとエモいスライドにしようと思います。 分散アルゴリズムの形式化 定理証明による検証 今回の話の流れとして「分散システムにはモデル検査が有効」と述べていますが、必ずしも定理証明が分散システムの検証に向かないという…</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE</id><title type="text">入社</title><updated>2018-08-01T00:00:56+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/08/01/%E5%85%A5%E7%A4%BE"/><summary type="html">本日付けで IIJ に入社します。 職業 Haskeller になる……はず。</summary></entry><entry><id>https://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7</id><title type="text">退職</title><updated>2018-07-31T22:30:05+09:00</updated><author><name>岡本和樹</name></author><link href="https://kakkun61.hatenablog.com/entry/2018/07/31/%E9%80%80%E8%81%B7"/><summary type="html">2013年に新卒で入社した KLab を今日付けで退職しました。</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/21/114826</id><title type="text">LTS-12.1でhpack-convertコンパイルできないんすよねー</title><updated>2018-07-21T11:48:26+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/21/114826"/><summary type="html">そんなこともあろうかと、forkして lts-12.1 ブランチ用意しておきましたので。 github.com まあ、ただの変換ツールなので、古いLTSでビルドしても構わない気はするけど、新しいマシンだと ghc インストールさせたりするのだるかったので。 ということで、手元のリポジトリももろもろ hpack に乗り換えようとしてるのだった。 https://github.com/hiratara/hs-server-starter/pull/4 https://github.com/hiratara/hs-reqcatcher/pull/2 https://github.com/hirata…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2018/07/14/195255</id><title type="text">Dhallによるリッチな設定ファイル体験</title><updated>2018-07-14T19:52:55+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2018/07/14/195255"/><summary type="html">(この記事のレギュレーション: lts-11.9) Dhall という設定記述用言語があり、使ってみたところ良い感じだったので紹介します。 なお、この記事は先日某所で発表したものの拡大版になります。 speakerdeck.com Dhallとは何か Dhallについて短かく表現するなら公式サイトの以下の説明が分かりやすいです。 You can think of Dhall as: JSON + functions + types + imports データ表現にプログラマブルさと静的な検査とファイルのインポートを加えたものというわけです。 まだ開発中のためかあまりアピールされていませんがツー…</summary></entry><entry><id>http://hiratara.hatenadiary.jp/entry/2018/07/14/175016</id><title type="text">Haskell入門のサンプルコードのLTS-12.0対応 </title><updated>2018-07-14T17:50:16+09:00</updated><author><name>hiratara</name></author><link href="http://hiratara.hatenadiary.jp/entry/2018/07/14/175016"/><summary type="html">つい半年前に最新のLTSへ対応したばかりなのに、気がつくと LTS-12.0 が出て、 ghc-8.4 を Stack から使えるようになった。コミュニティが活発で、非常にありがたいことである。 ということで、 Haskell入門 のサンプルもLTS-12.0に対応させたブランチを用意した。と言っても、いくつか Stackge の管理下から外れてしまったパッケージが出てきたのを調整したくらいで、コードは何も変更していない。 github.com さらに素晴らしいことに、これらのコードはすべてWindows 10の最新の WSL 上で動くことを確認できた。macOS上で試すのと同様に、 Wind…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2017/11/17/090000</id><title type="text">zshの標準エラー出力の色を赤くする</title><updated>2018-06-29T14:22:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2017/11/17/090000"/><summary type="html">[追記]以下の方法は良くないようです。必ず、このエントリー最後の「stderredを使う」を参照してください[/追記] 最近stderrを赤くするように設定したら、コマンドの出力がかなり見やすくなりました。 設定はこんな感じに書いてます。 zmodload zsh/terminfo zsh/system color_stderr() { while sysread std_err_color; do syswrite -o 2 "${fg_bold[red]}${std_err_color}${terminfo[sgr0]}" done } exec 2&gt; &gt;(color_stderr) fg…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2016/12/04/120000</id><title type="text">珍しいSHA1ハッシュを追い求めて</title><updated>2018-06-29T08:55:02+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2016/12/04/120000"/><summary type="html">「SHA1ハッシュってあるだろう？」 放課後、いつものように情報処理室に行くと、高山先輩が嬉しそうな顔でそう言った。 「ええ、SHA1、ありますね」 「SHA1って何桁か覚えているかい？」 「えっと…」 一年下の後輩、岡村が口を開いた。 「50桁くらいはありましたっけ…？」 先輩はパソコンに向かって何かを打ちはじめた。 現在、情報部の部員は三人しかいない。部長の高山先輩と、二年の自分と、後輩の岡村だ。いや、正確に言うと、先輩の学年にはもう少しいたのだが、もうほとんど部室に来ることはなくなってしまった。無理もない、この季節になると先輩たちは受験勉強で忙しくなる。 「例えば、こういうふうに… 適当…</summary></entry><entry><id>https://itchyny.hatenablog.com/entry/2018/06/25/130000</id><title type="text">はてな・ペパボ技術大会 #4 〜DevOps〜 @京都 で登壇しました</title><updated>2018-06-25T13:40:55+09:00</updated><author><name>itchyny</name></author><link href="https://itchyny.hatenablog.com/entry/2018/06/25/130000"/><summary type="html">先日 6/23 に技術イベント「はてな・ペパボ技術大会 #4 〜DevOps〜 @京都」で登壇・トークセッションに参加しました。 hatena.connpass.com 普段の業務でDevOpsという言葉を使うことはありません。 しかし、DevOpsのあり方を見直した結果が現状の体制や仕事のフローであったり、あるいはこれからやろうとしていることにつながっているのだと思います。 技術の進歩によりDockerやGraphQLといった、レイヤー間の共通言語が発達する中で、ソフトウェア間あるいはチーム間が疎結合になっていくことはよいです。 一方でそういう技術で解決できない場面も残っていくのだろうなと思…</summary></entry><entry><id>https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html</id><title type="text">[linux][cygwin] unzipコマンドで "error:  invalid compressed data to inflate" というエラーメッセージがでたら？</title><updated>2018-06-06T01:11:48.468+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2018/06/linuxcygwin-unzip-error-invalid.html"/><summary type="text">zipアーカイブの中に長さが0のファイルが含まれていると、unzipコマンドでは以下のようなエラーメッセージが表示されて、解凍することができません。アーカイブが壊れていなくてもエラーになります。
 % unzip hoge.zip
   error:  invalid compressed data to inflate
 
