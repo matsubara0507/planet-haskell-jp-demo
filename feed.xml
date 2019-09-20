@@ -1080,7 +1080,7 @@ Hi matsubara0507!!&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Elm で「生成した JSON ファイルを読み込む」というのは少し大変だった． Elm で初期値を与えるには &lt;code&gt;init&lt;/code&gt; 関数の &lt;code&gt;Flag&lt;/code&gt; というのを使う。&lt;a href="https://qiita.com/jinjor/items/245959d2da710eda18fa#browserelement"&gt;このあたりが参考になる&lt;/a&gt;．&lt;/p&gt;
 &lt;p&gt;で，問題はどうやってローカルの JSON を読み込むか． &lt;a href="https://github.com/matsubara0507/git-plantation/blob/8b0c44e6e6e20bd23998f7df5e0817fcf17fb6a8/src/Git/Plantation/API.hs#L47-L48"&gt;git-plantation では Haskell で埋め込んでいた&lt;/a&gt;のだが，今回はサーバー側がないのでできない． ググったら出てきた:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="https://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript"&gt;Load JSON file locally using pure Javascript by Rich on CodePen&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://gist.github.com/laurenancona/bd560948d71054e3d1477e43c4d48cb6"&gt;Access local JSON data with Javascript・GitHub Gist&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;JS 詳しくないのでこれが良い方法なのかはわからないけど，これを参考にして次のような JS を書いて &lt;code&gt;index.html&lt;/code&gt; から読み込むようにした:&lt;/p&gt;
 &lt;div class="sourceCode" id="cb2"&gt;&lt;pre class="sourceCode javascript"&gt;&lt;code class="sourceCode javascript"&gt;&lt;span id="cb2-1"&gt;&lt;a href="#cb2-1"&gt;&lt;/a&gt;&lt;span class="st"&gt;&amp;quot;use strict&amp;quot;&lt;/span&gt;&lt;span class="op"&gt;;&lt;/span&gt;&lt;/span&gt;
