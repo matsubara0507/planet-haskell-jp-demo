@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2020-05-05T23:45:26.947+09:00</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://kurokawh.blogspot.com/2019/11/mac-mojava.html</id><title type="text">[mac] Mojavaクリーンインストール</title><updated>2020-05-05T23:45:26.947+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2019/11/mac-mojava.html"/><summary type="text">Mojavaへのアップデートを契機にmac book airを初期化して環境をクリーンセットアップしました。
+<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><title type="text">Planet Haskell (JP)</title><id>https://matsubara0507.github.io/planet-haskell-jp-demo/feed.xml</id><updated>2020-05-06T17:02:25.994+09:00</updated><link href="https://matsubara0507.github.io/planet-haskell-jp-demo"/><entry><id>https://kurokawh.blogspot.com/2019/11/mac-mojava.html</id><title type="text">[mac] Mojavaクリーンインストール</title><updated>2020-05-06T17:02:25.994+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2019/11/mac-mojava.html"/><summary type="text">Mojavaへのアップデートを契機にmac book airを初期化して環境をクリーンセットアップしました。
 自分にとって使いやすい環境の設定手順および、インストールしたアプリ群の情報をメモがわりに残しておきます。
 
 
@@ -31,10 +31,26 @@
 
 キーボード
 
-F1, F2などのキーを標準のファンクションキーとして利用する：チェック
-ショートカット ー 入力ソース：以下のチェックを外す
+キーボード
 
-前の</summary></entry><entry><id>https://hiratara.hatenadiary.jp/entry/2020/05/04/215714</id><title type="text">AVL木</title><updated>2020-05-04T21:58:51+09:00</updated><author><name>hiratara</name></author><link href="https://hiratara.hatenadiary.jp/entry/2020/05/04/215714"/><summary type="html">確か、いい感じに深くなりすぎない木だよね。回転？なにそれ？みたいな状態から実装し始めたら、面倒で死ぬかと思った。 AVL Tree by Java -- これで分かったAVL木 とか AVL木の回転(要素の挿入や削除のしかた) - Qiita とかを参考に実装した。２週間くらい前から２回ほどチャレンジしてギブアップしていて、本日、腰を据えて三度目の正直。コードを整形する気力が残ってないので、そのまま貼り付け。 type 'a btree = | Node of int * 'a * 'a btree * 'a btree | Leaf ;; let rotate_right t = match…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2020/04/29/170208</id><title type="text">家から出ない生活４週間</title><updated>2020-04-29T17:10:29+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2020/04/29/170208"/><summary type="html">出社非推奨になったのを機に家から出ない生活を始めて４週間が経った。今までやったことをまとめていく。 食料品 せっかくだから生活で縛りプレイをしてみようと思って Amazon と Yodobashi を禁止にしている。この２社は最近評判が良くないこともあるし。 業務スーパーの通販 いわゆるネットスーパーはサイトが激重になっていたり配達可能日がすべて☓になっていたりで機能不全を起こしているようだった。そこで飲食店がメインターゲットであろう業務スーパーなら今空いているだろうという読み。ここではピザ材料、冷凍野菜、割り箸などを入手している。 とにかく業務スーパーの通販を最大限利用するには冷凍室の容積が…</summary></entry><entry><id>https://matsubara0507.github.io/posts/2020-04-20-servant-with-slack-verifying-requests.html</id><title type="text">Haskell Servant で Slack からの署名付きリクエストを受ける</title><updated>2020-04-20T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2020-04-20-servant-with-slack-verifying-requests.html"/><summary type="html">&lt;div class="post-content" itemprop="articleBody"&gt;
+F1, F2などのキーを標準のファンクションキーとして利用する：チェック
+修飾キー：ControlとOptionを</summary></entry><entry><id>https://kurokawh.blogspot.com/2020/05/linux-gnupg.html</id><title type="text">[linux] gnupgによる暗号化処理時の確認プロンプトを抑制する方法</title><updated>2020-05-06T16:37:57.790+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2020/05/linux-gnupg.html"/><summary type="text">gnupgを用いてファイルを暗号化する際、予めインポートした公開鍵に対してtrust設定をしておかないと、指定した公開鍵毎に以下のような警告が発せられます。
+
+
+% gpg -e -r abc@test.org a.txt 
+gpg: AAAA4C0DD6F2ZZZZ: この鍵が本当に本人のものである、という兆候が、ありません
+
+sub  elg2048/AAAA4C0DD6F2ZZZZ 2020-05-06 Hiroyuki Kurokawa &lt;abc@test.org&gt;
+  主鍵フィンガープリント: &lt;snip&gt;
+  副鍵フィンガープリント: &lt;snip&gt;
+
+この鍵は、このユーザIDをなのる本人のものかどうか確信でき
+ません。今から行うことを＊本当に＊理解していない場合には、
+次の質問にはnoと答えてください。
+
+それでもこの鍵を使いますか? (y/N)
+
+以下のオプションを指定する</summary></entry><entry><id>https://hiratara.hatenadiary.jp/entry/2020/05/04/215714</id><title type="text">AVL木</title><updated>2020-05-04T21:58:51+09:00</updated><author><name>hiratara</name></author><link href="https://hiratara.hatenadiary.jp/entry/2020/05/04/215714"/><summary type="html">確か、いい感じに深くなりすぎない木だよね。回転？なにそれ？みたいな状態から実装し始めたら、面倒で死ぬかと思った。 AVL Tree by Java -- これで分かったAVL木 とか AVL木の回転(要素の挿入や削除のしかた) - Qiita とかを参考に実装した。２週間くらい前から２回ほどチャレンジしてギブアップしていて、本日、腰を据えて三度目の正直。コードを整形する気力が残ってないので、そのまま貼り付け。 type 'a btree = | Node of int * 'a * 'a btree * 'a btree | Leaf ;; let rotate_right t = match…</summary></entry><entry><id>http://syocy.hatenablog.com/entry/2020/04/29/170208</id><title type="text">家から出ない生活４週間</title><updated>2020-04-29T17:10:29+09:00</updated><author><name>syocy</name></author><link href="http://syocy.hatenablog.com/entry/2020/04/29/170208"/><summary type="html">出社非推奨になったのを機に家から出ない生活を始めて４週間が経った。今までやったことをまとめていく。 食料品 せっかくだから生活で縛りプレイをしてみようと思って Amazon と Yodobashi を禁止にしている。この２社は最近評判が良くないこともあるし。 業務スーパーの通販 いわゆるネットスーパーはサイトが激重になっていたり配達可能日がすべて☓になっていたりで機能不全を起こしているようだった。そこで飲食店がメインターゲットであろう業務スーパーなら今空いているだろうという読み。ここではピザ材料、冷凍野菜、割り箸などを入手している。 とにかく業務スーパーの通販を最大限利用するには冷凍室の容積が…</summary></entry><entry><id>https://matsubara0507.github.io/posts/2020-04-20-servant-with-slack-verifying-requests.html</id><title type="text">Haskell Servant で Slack からの署名付きリクエストを受ける</title><updated>2020-04-20T00:00:00Z</updated><author><name>matsubara0507</name></author><link href="https://matsubara0507.github.io/posts/2020-04-20-servant-with-slack-verifying-requests.html"/><summary type="html">&lt;div class="post-content" itemprop="articleBody"&gt;
     &lt;p&gt;Slack のスラッシュコマンドなどで利用される署名付きリクエストを Haskell Servant で受ける方法を考えて実装しました． 実装は slackell という Haskell の Slack API パッケージにしてあります：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://github.com/matsubara0507/slackell"&gt;matsubara0507/slackell - GitHub&lt;/a&gt;&lt;/li&gt;
@@ -3144,14 +3160,4 @@ gtagsの特徴：
 正規表現で一覧絞り込み可能（gtags-find-pattern）
 開いているファイルで絞り込み可能（gtags-parsefiile）
 
-特定文字列</summary></entry><entry><id>https://kurokawh.blogspot.com/2015/06/subversion.html</id><title type="text">[subversion] 特定ディレクトリ以下をサーバーとの同期対象から除外する方法</title><updated>2015-06-26T13:55:24.651+09:00</updated><author><name>Hiroyuki Kurokawa (hrkr)</name></author><link href="https://kurokawh.blogspot.com/2015/06/subversion.html"/><summary type="text">subversionでチェックアウトした作業コピー内の特定ディレクトリ以下をサーバーとの同期対象から除外したい、ということを考えたことはないでしょうか。
-例えば、リポジトリの特定ディレクトリ以下に自分にとって不要なファイルやアーカイブが多数コミットされていると、以下のような無駄が生じます。これらの無駄をなくしたい、というのが主なユースケースです。
-
-不要なファイル・アーカイブによってディスクスペースが占有される
-サーバー上に更新が発生した際にupdateに余計な時間がかかってしまう
-
-
-
-単純に特定ディレクトリ以下の作業ファイルを削除してしまうと、コミット時に差分として検知されてしまう、また、次回以降のupdateコマンドで再ダウンロードされてしまう、という非常に残念な挙動になります。
-
-このようなケースでは以下の方法を使えば、差分が検知されない状態で所定ディレクトリ以下のファイルを削除</summary></entry><entry><id>http://lotz84.github.io/posts/published_haskell_by_example.html</id><title type="text">Haskell by Exampleを公開しました</title><updated>2015-05-06T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/published_haskell_by_example.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/build-chat-server-on-haskell.html</id><title type="text">Haskellでチャットサーバーを建ててみた</title><updated>2015-04-27T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/build-chat-server-on-haskell.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/unity-hands-on-session-at-camphor.html</id><title type="text">Unityハンズオン勉強会に参加しました@CAMPHOR-</title><updated>2015-04-25T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/unity-hands-on-session-at-camphor.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/the-way-of-separate-compilation-in-swift.html</id><title type="text">Swift で分割コンパイルする方法</title><updated>2015-02-07T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/the-way-of-separate-compilation-in-swift.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/use-selenium-by-haskell.html</id><title type="text">HaskellでSeleniumを使ってみる＠勉強会</title><updated>2014-12-14T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/use-selenium-by-haskell.html"/><summary type="html"></summary></entry></feed>
+特定文字列</summary></entry><entry><id>http://lotz84.github.io/posts/published_haskell_by_example.html</id><title type="text">Haskell by Exampleを公開しました</title><updated>2015-05-06T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/published_haskell_by_example.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/build-chat-server-on-haskell.html</id><title type="text">Haskellでチャットサーバーを建ててみた</title><updated>2015-04-27T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/build-chat-server-on-haskell.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/unity-hands-on-session-at-camphor.html</id><title type="text">Unityハンズオン勉強会に参加しました@CAMPHOR-</title><updated>2015-04-25T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/unity-hands-on-session-at-camphor.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/the-way-of-separate-compilation-in-swift.html</id><title type="text">Swift で分割コンパイルする方法</title><updated>2015-02-07T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/the-way-of-separate-compilation-in-swift.html"/><summary type="html"></summary></entry><entry><id>http://lotz84.github.io/posts/use-selenium-by-haskell.html</id><title type="text">HaskellでSeleniumを使ってみる＠勉強会</title><updated>2014-12-14T00:00:00Z</updated><author><name>lotz</name></author><link href="http://lotz84.github.io/posts/use-selenium-by-haskell.html"/><summary type="html"></summary></entry></feed>
